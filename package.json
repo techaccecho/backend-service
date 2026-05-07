@@ -1,0 +1,43 @@
+{
+  "name": "backend-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch --env-file=.env.local src/index.ts",
+    "build": "tsc",
+    "start": "node --env-file=.env.local dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "lint:staged": "biome check --write --no-errors-on-unmatched",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
+    "prepare": "husky"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.33.2",
+  "dependencies": {
+    "@fastify/env": "^6.0.0",
+    "@sinclair/typebox": "^0.34.49",
+    "convex": "^1.36.1",
+    "fastify": "^5.8.5",
+    "fastify-plugin": "^5.1.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.4.13",
+    "@commitlint/cli": "^20.5.2",
+    "@commitlint/config-conventional": "^20.5.0",
+    "@types/node": "latest",
+    "@vitest/coverage-v8": "^4.1.5",
+    "husky": "^9.1.7",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.5"
+  }
+}
