@@ -1,4 +1,4 @@
-import type { Env } from '../config';
+import type { Env } from '../lib';
 
 declare module 'fastify' {
   interface FastifyInstance {

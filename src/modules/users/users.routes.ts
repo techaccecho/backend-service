@@ -1,65 +1,135 @@
-import { type Static, Type } from '@sinclair/typebox';
-import type { FastifyPluginAsync } from 'fastify';
-import type { Id } from '../../../convex/_generated/dataModel';
-import { UsersService } from './users.service';
+import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
+import { Type } from '@sinclair/typebox';
+import {
+  AppErrorSchema,
+  PaginatedUserDataSchema,
+  QuerySchema,
+  UserDataSchema,
+} from '../../lib';
+import {
+  CreateUserCommand,
+  CreateUserSchema,
+  DeleteUserCommand,
+  DeleteUserParamSchema,
+  UpdateUserCommand,
+  UpdateUserParamSchema,
+  UpdateUserSchema,
+} from './commands';
+import { GetUserParamSchema, GetUserQuery, GetUsersQuery } from './queries';
 
-const ParamsSchema = Type.Object({
-  id: Type.String({
-    description: 'The Convex Unique ID for the user',
-    pattern: '^[a-z0-9]{32}$', // Optional: Convex IDs are typically 32-char strings
-  }),
-});
+export const usersRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
+  const { mediator } = fastify;
 
-const GetUsersQuerySchema = Type.Object({
-  cursor: Type.Optional(Type.String()),
-  limit: Type.Optional(Type.String()), // Queries usually come in as strings
-});
-
-type GetUsersQuery = Static<typeof GetUsersQuerySchema>;
-
-type Params = Static<typeof ParamsSchema>;
-
-const userRoutes: FastifyPluginAsync = async (fastify) => {
-  const service = new UsersService(fastify.convex);
-
-  fastify.get<{ Params: Params }>(
-    '/:id',
+  fastify.post(
+    '/',
     {
       schema: {
-        params: ParamsSchema,
+        description: 'Create a new user',
+        tags: ['Users'],
+        body: CreateUserSchema,
         response: {
-          200: Type.Object({
-            _id: Type.String(),
-            email: Type.String(),
-            role: Type.String(),
-          }),
+          201: UserDataSchema,
+          400: AppErrorSchema,
+          500: AppErrorSchema,
         },
       },
     },
     async (request, reply) => {
-      const userId = request.params.id as Id<'users'>;
-
-      try {
-        const user = await service.findById(userId);
-        return user;
-      } catch (_err) {
-        return reply.status(404).send({ error: 'User not found' });
-      }
+      const { body } = request;
+      const command = new CreateUserCommand(body);
+      const response = await mediator.send(command);
+      return reply.status(201).send(response);
     },
   );
 
-  fastify.get<{ Querystring: GetUsersQuery }>(
+  fastify.get(
     '/',
-    { schema: { querystring: GetUsersQuerySchema } },
-    async (request) => {
-      const { cursor, limit } = request.query;
+    {
+      schema: {
+        description: 'Get all users with pagination',
+        tags: ['Users'],
+        querystring: QuerySchema,
+        response: {
+          200: PaginatedUserDataSchema,
+          400: AppErrorSchema,
+          500: AppErrorSchema,
+        },
+      },
+    },
+    async (request, reply) => {
+      const query = new GetUsersQuery(request.query);
+      const response = await mediator.send(query);
+      return reply.status(200).send(response);
+    },
+  );
 
-      return await service.getUsers({
-        numItems: parseInt(limit ?? '10', 10),
-        cursor: cursor ?? null,
-      });
+  fastify.get(
+    '/:id',
+    {
+      schema: {
+        description: 'Get a user by id',
+        tags: ['Users'],
+        params: GetUserParamSchema,
+        response: {
+          200: UserDataSchema,
+          400: AppErrorSchema,
+          404: AppErrorSchema,
+          500: AppErrorSchema,
+        },
+      },
+    },
+    async (request, reply) => {
+      const { params } = request;
+      const query = new GetUserQuery(params);
+      const response = await mediator.send(query);
+      return reply.status(200).send(response);
+    },
+  );
+
+  fastify.patch(
+    '/:id',
+    {
+      schema: {
+        description: 'Update an existing user partially',
+        tags: ['Users'],
+        params: UpdateUserParamSchema,
+        body: UpdateUserSchema,
+        response: {
+          200: UserDataSchema,
+          400: AppErrorSchema,
+          404: AppErrorSchema,
+          500: AppErrorSchema,
+        },
+      },
+    },
+    async (request, reply) => {
+      const { params, body } = request;
+      const command = new UpdateUserCommand(params, body);
+      const response = await mediator.send(command);
+      return reply.status(200).send(response);
+    },
+  );
+
+  fastify.delete(
+    '/:id',
+    {
+      schema: {
+        description: 'Delete a user',
+        tags: ['Users'],
+        params: DeleteUserParamSchema,
+        response: {
+          204: Type.Null(),
+          400: AppErrorSchema,
+          404: AppErrorSchema,
+          500: AppErrorSchema,
+        },
+      },
+    },
+    async (request, reply) => {
+      const { params } = request;
+      const command = new DeleteUserCommand(params);
+      await mediator.send(command);
+      return reply.status(204).send(null);
     },
   );
 };
-
-export default userRoutes;

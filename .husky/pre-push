@@ -1,5 +1,0 @@
-#!/usr/bin/env sh
-# Clean the project and check for syntax/formatting errors
-# Verify all TypeScript types are valid
-# Run all unit tests
-pnpm lint && pnpm typecheck && pnpm test
