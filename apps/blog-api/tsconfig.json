@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "target": "ES2017",
+  "module": "CommonJS",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src"
+  },
+  "include": ["src/**/*.ts"],
+  "references": [
+    { "path": "../../libs/convex" }
+  ]
+}

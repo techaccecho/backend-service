@@ -1,15 +1,8 @@
 {
-  "compilerOptions": {
-    "target": "es2017",
-    "module": "es2022",
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "moduleResolution": "bundler",
-    "strict": true,
-    "skipLibCheck": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "types": ["reflect-metadata"]
-  },
-  "include": ["src/**/*.ts"]
+  "files": [],
+  "references": [
+    { "path": "./libs/convex" },
+    { "path": "./apps/blog-api" },
+    { "path": "./apps/puzzle-api" }
+  ]
 }
