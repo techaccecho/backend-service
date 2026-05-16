@@ -17,6 +17,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@backend-service/convex": "workspace:*",
     "@fastify/auth": "^5.0.4",
     "@fastify/env": "^6.0.0",
     "@fastify/jwt": "^10.0.0",

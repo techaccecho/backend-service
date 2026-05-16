@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@backend-service/convex':
+        specifier: workspace:*
+        version: link:libs/convex
       '@fastify/auth':
         specifier: ^5.0.4
         version: 5.0.4
