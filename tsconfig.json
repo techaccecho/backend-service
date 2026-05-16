@@ -1,14 +1,19 @@
 {
   "compilerOptions": {
-    "target": "es2022",
-    "module": "es2022",
+    "baseUrl": ".",
+    "target": "es2017",
+    "module": "nodenext",
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
     "skipLibCheck": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "types": ["reflect-metadata"]
+    "types": ["reflect-metadata"],
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "moduleResolution": "NodeNext"
   },
   "include": ["src/**/*.ts"]
 }
