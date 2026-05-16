@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch --env-file=.env src/index.ts",
-    "build": "tsup src/index.ts api/serverless.ts --clean",
+    "build": "tsup src/app.ts --format esm --clean",
     "start": "node  dist/src/index.cjs",
     "typecheck": "tsc --noEmit",
     "lint": "biome check .",
@@ -23,6 +23,7 @@
   "license": "ISC",
   "packageManager": "pnpm@10.33.2",
   "dependencies": {
+    "@fastify/aws-lambda": "^6.4.0",
     "@fastify/env": "^6.0.0",
     "@fastify/swagger": "^9.7.0",
     "@fastify/swagger-ui": "^5.2.6",

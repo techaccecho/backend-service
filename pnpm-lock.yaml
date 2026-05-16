@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@fastify/aws-lambda':
+        specifier: ^6.4.0
+        version: 6.4.0
       '@fastify/env':
         specifier: ^6.0.0
         version: 6.0.0
@@ -621,6 +624,9 @@ packages:
 
   '@fastify/ajv-compiler@4.0.5':
     resolution: {integrity: sha512-KoWKW+MhvfTRWL4qrhUwAAZoaChluo0m0vbiJlGMt2GXvL4LVPQEjt8kSpHI3IBq5Rez8fg+XeH3cneztq+C7A==}
+
+  '@fastify/aws-lambda@6.4.0':
+    resolution: {integrity: sha512-7iCx4Bl+SoeeRP0ALv1Rg4AR63yBW8XxgQiQ4OrTJApUObMzMtN1VPFtnoAqGhtpruAeVUTxgGpsW1hasYxU8Q==}
 
   '@fastify/env@6.0.0':
     resolution: {integrity: sha512-b7FoRMdwZMF6vdhq0OHdj+xX6ggyeUq7rx+CZXnsAAgVhFbVQ7GZXb9pEzLaF3/tG8U489ZMD+Qh0RPKuNb5sQ==}
@@ -3451,6 +3457,8 @@ snapshots:
       ajv: 8.20.0
       ajv-formats: 3.0.1(ajv@8.20.0)
       fast-uri: 3.1.2
+
+  '@fastify/aws-lambda@6.4.0': {}
 
   '@fastify/env@6.0.0':
     dependencies:
