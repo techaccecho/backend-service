@@ -1,10 +1,10 @@
 import type { Id } from '@backend-service/convex';
-import { type Static, Type } from '@sinclair/typebox';
-import { RequestData } from 'mediatr-ts';
 import type {
   CommentEntity,
   UpdatePostArgs,
-} from '../../../../../../libs/convex/schema';
+} from '@backend-service/convex/convex/schema';
+import { type Static, Type } from '@sinclair/typebox';
+import { RequestData } from 'mediatr-ts';
 import type { PostData } from '../../../lib';
 
 export const UpdateCommentParamSchema = Type.Object({

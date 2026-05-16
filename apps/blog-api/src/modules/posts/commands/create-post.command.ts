@@ -1,7 +1,7 @@
 import type { Doc } from '@backend-service/convex';
+import type { CreatePostArgs } from '@backend-service/convex/convex/schema';
 import { type Static, Type } from '@sinclair/typebox';
 import { RequestData } from 'mediatr-ts';
-import type { CreatePostArgs } from '../../../../../../libs/convex/schema';
 import type { PostData } from '../../../lib';
 
 export const CreatePostSchema = Type.Object({

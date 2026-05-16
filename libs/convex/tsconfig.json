@@ -3,8 +3,8 @@
   "module": "CommonJS",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./",
+    "composite": true
   },
-  "include": ["src/**/*.ts"],
-  "references": [{ "path": "../../libs/convex" }]
+  "include": ["index.ts"]
 }

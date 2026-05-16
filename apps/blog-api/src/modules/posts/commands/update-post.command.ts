@@ -1,7 +1,7 @@
 import type { Id } from '@backend-service/convex';
+import type { UpdatePostArgs } from '@backend-service/convex/convex/schema';
 import { type Static, Type } from '@sinclair/typebox';
 import { RequestData } from 'mediatr-ts';
-import type { UpdatePostArgs } from '../../../../../../libs/convex/schema';
 import { type IdParam, IdParamSchema, type PostData } from '../../../lib';
 
 export const UpdatePostParamSchema = IdParamSchema(

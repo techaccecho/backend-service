@@ -1,0 +1,17 @@
+{
+  "name": "@backend-service/convex",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npx convex dev",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "convex": "^1.36.1",
+    "reflect-metadata": "^0.2.2"
+  },
+  "devDependencies": {
+    "tsx": "^4.21.0"
+  }
+}

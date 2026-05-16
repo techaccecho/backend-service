@@ -6,8 +6,8 @@ import {
   EmailSchema,
   IdSchema,
   UpdateUserSchema,
-  UserIdSchema,
   UserEntitySchema,
+  UserIdSchema,
 } from './schema';
 
 export const create = mutation({

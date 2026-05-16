@@ -8,6 +8,7 @@
     "dev:blog": "pnpm --filter blog-api dev",
     "dev:puzzle": "pnpm --filter puzzle-api dev",
     "build": "pnpm --filter \"./apps/**\" --filter \"./libs/**\" build",
+    "build:blog": "pnpm --filter blog-api build",
     "typecheck": "pnpm -r typecheck",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",

@@ -6,7 +6,7 @@ import {
   PostIdSchema,
   PostTypeSchema,
   UpdatePostSchema,
-} from '../../apps/blog-api/src/convex/schema';
+} from './schema';
 
 export const create = mutation({
   args: PostEntitySchema,
