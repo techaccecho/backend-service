@@ -55,7 +55,7 @@ export const postsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
   fastify.get(
     '/',
     {
-      preHandler: fastify.authenticate,
+      // preHandler: fastify.authenticate,
       schema: {
         description: 'Get all posts with pagination',
         tags: ['Posts'],
