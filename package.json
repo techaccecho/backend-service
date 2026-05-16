@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch --env-file=.env src/index.ts",
-    "build": "tsup src/**/* --format esm --splitting false",
+    "build": "tsup src/index.ts api/serverless.ts --format esm --clean",
     "start": "node  dist/index.js",
     "typecheck": "tsc --noEmit",
     "lint": "biome check .",
