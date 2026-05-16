@@ -5,10 +5,9 @@
   "type": "module",
   "packageManager": "pnpm@10.33.2",
   "scripts": {
-    "dev:blog": "pnpm --filter blog-api dev",
-    "dev:puzzle": "pnpm --filter puzzle-api dev",
-    "build": "pnpm --filter \"./apps/**\" --filter \"./libs/**\" build",
-    "build:blog": "pnpm --filter blog-api build",
+    "dev": "tsx watch --env-file=.env src/index.ts",
+    "build": "tsup src/app.ts --format esm --out-dir dist --clean",
+    "start": "node --env-file=.env dist/index.js",
     "typecheck": "pnpm -r typecheck",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
@@ -17,7 +16,6 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@backend-service/convex": "workspace:*",
     "@fastify/auth": "^5.0.4",
     "@fastify/env": "^6.0.0",
     "@fastify/jwt": "^10.0.0",
@@ -45,6 +43,8 @@
     "@vitest/coverage-v8": "^4.1.5",
     "husky": "^9.1.7",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.5"
+    "vitest": "^4.1.5",
+    "tsup": "^8.5.1",
+    "tsx": "^4.21.0"
   }
 }
