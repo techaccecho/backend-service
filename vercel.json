@@ -4,7 +4,7 @@
   "buildCommand": "pnpm -r build",
   "functions": {
     "apps/blog-service/src/api/index.ts": {
-      "runtime": "@vercel/node"
+      "runtime": "nodejs20.x"
     }
   },
   "routes": [
