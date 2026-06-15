@@ -1,5 +1,4 @@
 import { bootstrap } from '@lib/starter';
-import { routesPlugin } from '../plugins/index.js';
 
 export async function buildApp() {
   const app = await bootstrap({
@@ -10,8 +9,6 @@ export async function buildApp() {
       version: '1.0.0'
     },
   });
-
-  await app.register(routesPlugin);
 
   return app;
 }
