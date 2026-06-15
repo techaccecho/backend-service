@@ -1,11 +1,9 @@
 {
   "version": 2,
-  "installCommand": "pnpm install",
-  "buildCommand": "pnpm -r build",
   "routes": [
     {
       "src": "/blog/(.*)",
-      "dest": "apps/blog-service/src/api/index.ts"
+      "dest": "apps/blog-service/src/api/index.js"
     }
   ]
 }
