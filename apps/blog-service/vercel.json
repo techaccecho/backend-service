@@ -1,8 +1,9 @@
 {
   "version": 2,
+  "outputDirectory": "dist",
   "builds": [
     {
-      "src": "dist/api/inde.js",
+      "src": "api/index.js",
       "use": "@vercel/node"
     }
   ]
