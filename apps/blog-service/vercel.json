@@ -1,4 +1,5 @@
 {
+  "outputDirectory": "apps/blog-service/dist",
   "rewrites": [
     {
       "source": "/(.*)",
