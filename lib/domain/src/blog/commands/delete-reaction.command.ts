@@ -32,6 +32,10 @@ export const toDeleteReactionArgs = (
     id: blog._id,
     updates: {
       reactions: restReactions,
+      engagement: {
+        ...blog.engagement,
+        reactions: restReactions.length,
+      },
     },
   };
 };

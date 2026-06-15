@@ -1,16 +1,14 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import type { ConvexHttpClient } from 'convex/browser';
 import { ValidationError, AsyncValidation } from '@lib/util';
-import { UpdateReaction } from '@lib/domain';
+import { UpdateCommentReaction } from '@lib/domain';
 import { verifyMutateCommentReaction } from '../../util/index.js';
 
 export const verifyUpdateCommentReactionHook = (convex: ConvexHttpClient, validation: AsyncValidation) => {
-    return async (request: FastifyRequest<{
-        Body: UpdateReaction
-    }>, _: FastifyReply) => {
+    return async (request: FastifyRequest, _: FastifyReply) => {
       await verifyMutateCommentReaction(convex, request);
       
-        const update = request.body;
+        const update = request.body as UpdateCommentReaction;
         
         const validationDetails = await validation
           .validator()

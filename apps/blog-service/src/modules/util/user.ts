@@ -34,5 +34,5 @@ export const verifyUserId = async (convex: ConvexHttpClient, request: FastifyReq
         throw new ForbiddenError();
     }
 
-    request.user = userResponse;
+    request.userRequest = userResponse;
 }

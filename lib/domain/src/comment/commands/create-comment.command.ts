@@ -90,10 +90,16 @@ export const toCreateCommentArgs = (
     updatedAt: null,
   };
 
+  const updateComments = [...existing.comments, createComment];
+
   return {
     id: existing._id,
     updates: {
-      comments: [...existing.comments, createComment],
+      comments: updateComments,
+      engagement: {
+        ...existing.engagement,
+        comments: updateComments.length
+      },
     },
   };
 };

@@ -51,10 +51,16 @@ export const toDeleteCommentReplyArgs = (
     (existingComment) => existingComment.id !== comment.id,
   );
 
+  const updateComments = [...restComments, updateComment];
+
   return {
     id: blog._id,
     updates: {
-      comments: [...restComments, updateComment],
+      comments: updateComments,
+      engagement: {
+        ...comment.engagement,
+        comments: updateComments.length
+      }
     },
   };
 };

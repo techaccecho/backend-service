@@ -31,6 +31,7 @@ export const EngagementSchema = Type.Object({
 export type Engagement = Static<typeof EngagementSchema>;
 
 export const ReactionSchema = Type.Object({
+  id: Type.String({ format: 'uuid' }),
   user: UserPreviewSchema,
   code: Type.String(),
   createdAt: Type.String({ format: 'date-time' }),
@@ -40,6 +41,7 @@ export const ReactionSchema = Type.Object({
 export type Reaction = Static<typeof ReactionSchema>;
 
 export const ReplySchema = Type.Object({
+  id: Type.String({ format: 'uuid' }),
   user: UserPreviewSchema,
   content: Type.Union([Type.String(), Type.Null()]),
   createdAt: Type.String({ format: 'date-time' }),

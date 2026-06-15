@@ -39,7 +39,7 @@ export const commentsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
   const { authenticate, convex, mediator } = fastify;
 
   fastify.post(
-    '/blogs/:blogId',
+    '/blogs/:blogId/comments',
     {
       schema: {
         description: 'Create a comment',
@@ -55,12 +55,12 @@ export const commentsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
       preHandler: [authenticate, verifyCreateCommentHook(convex)],
     },
     async (request, reply) => {
-      const { params, body, blog, user } = request;
+      const { params, body, blog, userRequest } = request;
 
       assertRequired('blog', blog);
-      assertRequired('user', user);
+      assertRequired('userRequest', userRequest);
 
-      const command = new CreateCommentCommand({params, create: body, existing: blog, user});
+      const command = new CreateCommentCommand({params, create: body, existing: blog, user: userRequest});
       const response = await mediator.send(command);
       return reply.status(201).send(response);
     },
@@ -140,13 +140,13 @@ export const commentsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
         preHandler: [authenticate, verifyCreateCommentViewerHook(convex)],
       },
       async (request, reply) => {
-        const { params, body, blog, comment, user } = request;
+        const { params, body, blog, comment, userRequest } = request;
 
         assertRequired('blog', blog);
         assertRequired('comment', comment);
-        assertRequired('user', user);
+        assertRequired('userRequest', userRequest);
 
-        const command = new CreateCommentViewerCommand({params, create: body, blog, comment, user});
+        const command = new CreateCommentViewerCommand({params, create: body, blog, comment, user: userRequest});
         const response = await mediator.send(command);
         return reply.status(201).send(response);
       },
@@ -169,20 +169,20 @@ export const commentsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
         preHandler: [authenticate, verifyCreateCommentReactionHook(convex)],
       },
       async (request, reply) => {
-        const { params, body, blog, comment, user } = request;
+        const { params, body, blog, comment, userRequest } = request;
 
         assertRequired('blog', blog);
         assertRequired('comment', comment);
-        assertRequired('user', user);
+        assertRequired('userRequest', userRequest);
 
-        const command = new CreateCommentReactionCommand({params, create: body, blog, comment, user});
+        const command = new CreateCommentReactionCommand({params, create: body, blog, comment, user: userRequest});
         const response = await mediator.send(command);
         return reply.status(201).send(response);
       },
     );
 
     fastify.patch(
-      '/blogs/:blogId/comments/:commentId/:reactionId',
+      '/blogs/:blogId/comments/:commentId/reactions/:reactionId',
       {
         schema: {
           description: 'Update reaction',

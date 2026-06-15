@@ -2,11 +2,28 @@
   "name": "backend-service",
   "private": true,
   "scripts": {
-    "build": "tsc -b",
-    "clean": "rimraf apps/**/dist lib/**/dist",
-    "dev:blog": "pnpm --filter blog-service dev"
+    "clean": "pnpm -r run clean && rm -rf node_modules",
+    "build": "pnpm -r run build",
+    "build:admin": "pnpm --filter admin-service build",
+    "build:auth": "pnpm --filter auth-service build",
+    "build:blog": "pnpm --filter blog-service build",
+    "build:game": "pnpm --filter game-service build",
+    "start:admin": "pnpm --filter admin-service start",
+    "start:auth": "pnpm --filter auth-service start",
+    "start:blog": "pnpm --filter blog-service start",
+    "start:game": "pnpm --filter game-service start"
+  },
+  "dependencies": {
+    "@lib/data": "workspace:*",
+    "@lib/util": "workspace:*",
+    "@lib/domain": "workspace:*",
+    "@lib/starter": "workspace:*",
+    "admin-service": "workspace:*",
+    "auth-service": "workspace:*",
+    "blog-service": "workspace:*",
+    "game-service": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "^5.8.0"
+    "typescript": "^6.0.3"
   }
 }

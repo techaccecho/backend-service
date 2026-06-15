@@ -50,7 +50,7 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
   const { authenticate, convex, mediator } = fastify;
 
   fastify.post(
-    '/',
+    '/blogs',
     {
       schema: {
         description: 'Create a blog',
@@ -65,16 +65,16 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
       preHandler: [authenticate, verifyCreateBlogHook(convex)],
     },
     async (request, reply) => {
-      const { body, user } = request;
-      assertRequired('user', user);
-      const command = new CreateBlogCommand({create: body, user});
+      const { body, userRequest } = request;
+      assertRequired('userRequest', userRequest);
+      const command = new CreateBlogCommand({create: body, user: userRequest});
       const response = await mediator.send(command);
       return reply.status(201).send(response);
     },
   );
 
   fastify.get(
-    '/:blogId',
+    '/blogs/:blogId',
     {
       schema: {
         description: 'Get a blog',
@@ -98,7 +98,7 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
   );
 
   fastify.get(
-    '/',
+    '/blogs',
     {
       schema: {
         description: 'Get blogs',
@@ -120,7 +120,7 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
   );
 
   fastify.patch(
-    '/:blogId',
+    '/blogs/:blogId',
     {
       schema: {
         description: 'Update a blog',
@@ -147,7 +147,7 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
   );
 
   fastify.delete(
-    '/:blogId',
+    '/blogs/:blogId',
     {
       schema: {
         description: 'Delete a blog',
@@ -173,7 +173,7 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
   );
 
   fastify.post(
-      '/:blogId/viewers',
+      '/blogs/:blogId/viewers',
       {
         schema: {
           description: 'Create a viewer',
@@ -189,19 +189,19 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
         preHandler: [authenticate, verifyCreateViewerHook(convex)],
       },
       async (request, reply) => {
-        const { params, body, blog, user } = request;
+        const { params, body, blog, userRequest } = request;
   
         assertRequired('blog', blog);
-        assertRequired('user', user);
+        assertRequired('userRequest', userRequest);
   
-        const command = new CreateViewerCommand({params, create: body, existing: blog, user});
+        const command = new CreateViewerCommand({params, create: body, existing: blog, user: userRequest });
         const response = await mediator.send(command);
         return reply.status(201).send(response);
       },
     );
 
     fastify.post(
-      '/:blogId/reactions',
+      '/blogs/:blogId/reactions',
       {
         schema: {
           description: 'Create a reaction',
@@ -217,19 +217,19 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
         preHandler: [authenticate, verifyCreateReactionHook(convex)],
       },
       async (request, reply) => {
-        const { params, body, blog, user } = request;
+        const { params, body, blog, userRequest } = request;
   
         assertRequired('blog', blog);
-        assertRequired('user', user);
+        assertRequired('userRequest', userRequest);
   
-        const command = new CreateReactionCommand({params, create: body, existing: blog, user});
+        const command = new CreateReactionCommand({params, create: body, existing: blog, user: userRequest});
         const response = await mediator.send(command);
         return reply.status(201).send(response);
       },
     );
   
     fastify.patch(
-      '/:blogId/reactions/:reactionId',
+      '/blogs/:blogId/reactions/:reactionId',
       {
         schema: {
           description: 'Update reaction',
@@ -258,7 +258,7 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
     );
   
     fastify.delete(
-      '/:blogId/reactions/:reactionId',
+      '/blogs/:blogId/reactions/:reactionId',
       {
         schema: {
           description: 'Delete a reaction',
@@ -286,7 +286,7 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
     );
 
     fastify.post(
-      '/:blogId/tags',
+      '/blogs/:blogId/tags',
       {
         schema: {
           description: 'Create a tag',
@@ -313,7 +313,7 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
     );
   
     fastify.patch(
-      '/:blogId/tags/:tagId',
+      '/blogs/:blogId/tags/:tagId',
       {
         schema: {
           description: 'Update a tag',
@@ -342,7 +342,7 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
     );
   
     fastify.delete(
-      '/:blogId/tags/:tagId',
+      '/blogs/:blogId/tags/:tagId',
       {
         schema: {
           description: 'Delete a tag',

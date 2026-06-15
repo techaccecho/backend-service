@@ -39,7 +39,7 @@ export const repliesRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
   const { authenticate, convex, mediator } = fastify;
 
   fastify.post(
-    '/blogs/:blogId/:commentId',
+    '/blogs/:blogId/comments/:commentId/replies',
     {
       schema: {
         description: 'Create a comment reply',
@@ -55,20 +55,20 @@ export const repliesRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
       preHandler: [authenticate, verifyCreateCommentReplyHook(convex)],
     },
     async (request, reply) => {
-      const { params, body, blog, comment, user } = request;
+      const { params, body, blog, comment, userRequest } = request;
 
       assertRequired('blog', blog);
       assertRequired('comment', comment);
-      assertRequired('user', user);
+      assertRequired('userRequest', userRequest);
 
-      const command = new CreateCommentReplyCommand({params, create: body, blog, comment, user});
+      const command = new CreateCommentReplyCommand({params, create: body, blog, comment, user: userRequest });
       const response = await mediator.send(command);
       return reply.status(201).send(response);
     },
   );
 
   fastify.patch(
-    '/blogs/:blogId/comments/:commentId/:replyId',
+    '/blogs/:blogId/comments/:commentId/replies/:replyId',
     {
       schema: {
         description: 'Update a comment reply',
@@ -98,7 +98,7 @@ export const repliesRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
   );
 
   fastify.delete(
-    '/blogs/:blogId/comments/:commentId/:replyId',
+    '/blogs/:blogId/comments/:commentId/replies/:replyId',
     {
       schema: {
         description: 'Delete a comment reply',
@@ -143,14 +143,14 @@ export const repliesRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
         preHandler: [authenticate, verifyCreateCommentReplyViewerHook(convex)],
       },
       async (request, reply) => {
-        const { params, body, blog, comment, commentReply, user } = request;
+        const { params, body, blog, comment, commentReply, userRequest } = request;
 
         assertRequired('blog', blog);
         assertRequired('comment', comment);
         assertRequired('commentReply', commentReply);
-        assertRequired('user', user);
+        assertRequired('userRequest', userRequest);
 
-        const command = new CreateCommentReplyViewerCommand({params, create: body, blog, comment, reply: commentReply, user});
+        const command = new CreateCommentReplyViewerCommand({params, create: body, blog, comment, reply: commentReply, user: userRequest});
         const response = await mediator.send(command);
         return reply.status(201).send(response);
       },
@@ -173,21 +173,21 @@ export const repliesRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
         preHandler: [authenticate, verifyCreateCommentReplyReactionHook(convex)],
       },
       async (request, reply) => {
-        const { params, body, blog, comment, commentReply, user } = request;
+        const { params, body, blog, comment, commentReply, userRequest } = request;
 
         assertRequired('blog', blog);
         assertRequired('comment', comment);
         assertRequired('commentReply', commentReply);
-        assertRequired('user', user);
+        assertRequired('userRequest', userRequest);
 
-        const command = new CreateCommentReplyReactionCommand({params, create: body, blog, comment, reply: commentReply, user});
+        const command = new CreateCommentReplyReactionCommand({params, create: body, blog, comment, reply: commentReply, user: userRequest });
         const response = await mediator.send(command);
         return reply.status(201).send(response);
       },
     );
 
     fastify.patch(
-      '/blogs/:blogId/comments/:commentId/:reactionId',
+      '/blogs/:blogId/comments/:commentId/replies/:replyId/:reactionId',
       {
         schema: {
           description: 'Update reaction',

@@ -58,7 +58,6 @@ export const toCreateUserArgs = (
     })) ?? [];
 
   return {
-    ...request,
     id: uuid(),
     authId: create.authId ?? null,
     email: create.email ?? null,

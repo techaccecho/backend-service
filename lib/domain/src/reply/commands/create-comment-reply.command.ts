@@ -96,9 +96,15 @@ export const toCreateCommentReplyArgs = (
     updatedAt: null,
   };
 
+  const updateReplies = [...comment.replies, createReply];
+
   const updateComment = {
     ...comment,
-    replies: [...comment.replies, createReply],
+    replies: updateReplies,
+    engagement: {
+      ...comment.engagement,
+      comments: updateReplies.length
+    }
   };
 
   const restComments = blog.comments.filter(

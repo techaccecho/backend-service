@@ -45,7 +45,7 @@ export const apisRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
   const { authenticate, convex, mediator } = fastify;
 
   fastify.post(
-    '/',
+    '/apis',
     {
       schema: {
         description: 'Create a api',
@@ -68,7 +68,7 @@ export const apisRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
   );
 
   fastify.get(
-    '/:apiId',
+    '/apis/:apiId',
     {
       schema: {
         description: 'Get an api',
@@ -92,7 +92,7 @@ export const apisRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
   );
 
   fastify.get(
-    '/',
+    '/apis',
     {
       schema: {
         description: 'Get apis',
@@ -114,7 +114,7 @@ export const apisRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
   );
 
   fastify.patch(
-    '/:apiId',
+    '/apis/:apiId',
     {
       schema: {
         description: 'Update an api',
@@ -142,7 +142,7 @@ export const apisRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
   );
 
   fastify.delete(
-    '/:apiId',
+    '/apis/:apiId',
     {
       schema: {
         description: 'Delete an api',
@@ -169,7 +169,7 @@ export const apisRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
   );
 
     fastify.post(
-      '/:apiId/features',
+      '/apis/:apiId/features',
       {
         schema: {
           description: 'Create a feature',
@@ -196,7 +196,7 @@ export const apisRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
     );
   
     fastify.patch(
-      '/:apiId/features/:featureId',
+      '/apis/:apiId/features/:featureId',
       {
         schema: {
           description: 'Update a feature',
@@ -225,7 +225,7 @@ export const apisRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
     );
   
     fastify.delete(
-      '/:apiId/features/:featureId',
+      '/apis/:apiId/features/:featureId',
       {
         schema: {
           description: 'Delete a feature',
@@ -253,7 +253,7 @@ export const apisRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
     );
 
     fastify.post(
-      '/:apiId/subscribers',
+      '/apis/:apiId/subscribers',
       {
         schema: {
           description: 'Create a subscriber',
@@ -280,7 +280,7 @@ export const apisRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
     );
   
     fastify.patch(
-      '/:apiId/subscribers/:subscriberId',
+      '/apis/:apiId/subscribers/:subscriberId',
       {
         schema: {
           description: 'Update a subscriber',
@@ -309,7 +309,7 @@ export const apisRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
     );
   
     fastify.delete(
-      '/:apiId/subscribers/:subscriberId',
+      '/apis/:apiId/subscribers/:subscriberId',
       {
         schema: {
           description: 'Delete a subscriber',

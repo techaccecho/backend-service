@@ -78,9 +78,9 @@ export const verifyMutateTag = async (convex: ConvexHttpClient, request: Fastify
     request.tag = tagResponse;
 }
 
-export const verifyUpdateBlog = async (convex: ConvexHttpClient, validation: AsyncValidation, request: FastifyRequest<{Body: UpdateBlog}>) => {
+export const verifyUpdateBlog = async (convex: ConvexHttpClient, validation: AsyncValidation, request: FastifyRequest) => {
     await verifyMutateBlog(convex, request);
-    const update = request.body;
+    const update = request.body as UpdateBlog;
     
     const validationDetails = await validation
         .validator()

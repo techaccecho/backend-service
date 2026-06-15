@@ -49,7 +49,6 @@ export const verifyJwt = (convex: ConvexHttpClient) => {
         request.log.info('A Jwt for an unregistered was sent. Attempting to auto register user');
 
         if (err instanceof NotFoundError) {
-
           const create =  toCreateUserArgs({ create: { authId, email}});
           const { id } = create;
           await convex.mutation(api.users.create, create);
@@ -67,6 +66,7 @@ export const verifyJwt = (convex: ConvexHttpClient) => {
         }
       }
     } catch (_err) {
+       console.log(_err);
       throw new UnauthorizedError();
     }
   };

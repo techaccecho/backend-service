@@ -2,7 +2,7 @@ import { AttributeEntity, CommentEntity, ReactionEntity, Doc, ReplyEntity } from
 
 declare module 'fastify' {
   interface FastifyRequest {
-    user?: Doc<'users'>;
+    userRequest?: Doc<'users'>;
     blog?: Doc<'blogs'>;
     comment?: CommentEntity;
     commentReply?: ReplyEntity;

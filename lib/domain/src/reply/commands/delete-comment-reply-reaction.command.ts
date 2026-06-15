@@ -58,9 +58,15 @@ export const toDeleteCommentReplyReactionArgs = (
     (existingReply) => existingReply.id !== reply.id,
   );
 
+  const updateReplies = [...restReplies, updateReply];
+
   const updateComment = {
     ...comment,
-    replies: [...restReplies, updateReply],
+    replies: updateReplies,
+    engagement: {
+      ...comment.engagement,
+      comments: updateReplies.length
+    }
   };
 
   const restComments = blog.comments.filter(

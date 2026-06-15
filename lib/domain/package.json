@@ -6,10 +6,16 @@
   "packageManager": "pnpm@10.33.2",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "scripts": {
     "dev": "tsx watch --env-file=.env src/index.ts",
     "build": "tsc -b",
-    "clean": "tsc -b --clean",
+    "clean": "rm -rf dist node_modules",
     "start": "node --env-file=.env dist/index.js",
     "typecheck": "pnpm -r typecheck",
     "lint": "biome check .",
@@ -49,7 +55,6 @@
     "husky": "^9.1.7",
     "tsup": "^8.5.1",
     "tsx": "^4.21.0",
-    "typescript": "^6.0.3",
     "vitest": "^4.1.5"
   }
 }

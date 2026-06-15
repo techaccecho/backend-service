@@ -49,12 +49,14 @@ export const UpdateCommentReplyAttachmentSchema = Type.Partial(
 
 export type UpdateCommentReplyAttachment = Static<typeof UpdateCommentReplyAttachmentSchema>;
 
-export const UpdateCommentReplySchema = Type.Object({
+export const UpdateCommentReplySchema = Type.Partial(
+  Type.Object({
   content: Type.String({ description: 'The actual content' }),
   attachments: Type.Array(UpdateCommentReplyAttachmentSchema, {
     description: 'The attachments referenced',
   }),
-});
+})
+);
 
 export type UpdateCommentReply = Static<typeof UpdateCommentReplySchema>;
 

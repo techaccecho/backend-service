@@ -8,8 +8,8 @@
  * @module
  */
 
-import type * as index from "../apis.ts";
-import type * as posts from "../blogs.js";
+import type * as apis from "../apis.js";
+import type * as blogs from "../blogs.js";
 import type * as users from "../users.js";
 
 import type {
@@ -19,8 +19,8 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
-  index: typeof index;
-  posts: typeof posts;
+  apis: typeof apis;
+  blogs: typeof blogs;
   users: typeof users;
 }>;
 

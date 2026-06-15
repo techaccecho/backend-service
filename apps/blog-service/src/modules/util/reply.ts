@@ -61,10 +61,10 @@ export const verifyMutateCommentReplyReaction = async (convex: ConvexHttpClient,
     request.reaction = reactionResponse;
 }
 
-export const verifyUpdateCommentReply = async (convex: ConvexHttpClient, validation: AsyncValidation, request: FastifyRequest<{ Body: UpdateComment }>) => {
+export const verifyUpdateCommentReply = async (convex: ConvexHttpClient, validation: AsyncValidation, request: FastifyRequest) => {
     await verifyMutateCommentReply(convex, request);
 
-    const update = request.body;
+    const update = request.body as UpdateComment;
     
     const validationDetails = await validation
         .validator()

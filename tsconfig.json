@@ -1,8 +1,11 @@
 {
+  "compilerOptions": {
+    "tsBuildInfoFile": "dist/.tsbuildinfo"
+  },
   "files": [],
   "references": [
+     { "path": "./lib/data" },
     { "path": "./lib/util" },
-    { "path": "./lib/data" },
     { "path": "./lib/domain" },
     { "path": "./lib/starter" },
     { "path": "./apps/admin-service" },

@@ -40,7 +40,7 @@ export type BootstrapConfig = {
 
 export const bootstrap = async (
   config: BootstrapConfig,
-): Promise<FastifyApp> => {
+) => {
   const { routePrefix, docs } = config;
 
   const app = Fastify({
@@ -68,7 +68,6 @@ export const bootstrap = async (
   await app.register(mediatorPlugin);
   await app.register(authPlugin);
   await app.register(errorHandlerPlugin);
-  await app.register(routesPlugin, { routePrefix });
 
   // Swagger
   await app.register(swagger, {
@@ -85,6 +84,8 @@ export const bootstrap = async (
   await app.register(swaggerUi, {
     routePrefix: `${routePrefix}/docs`,
   });
+
+  await app.register(routesPlugin, { routePrefix });
 
   return app;
 };

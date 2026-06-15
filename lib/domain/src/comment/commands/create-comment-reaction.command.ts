@@ -55,9 +55,15 @@ export const toCreateCommentReactionArgs = (
     updatedAt: null,
   };
 
+  const updateReactions = [...comment.reactions, createReaction];
+
   const updateComment = {
     ...comment,
-    reactions: [...comment.reactions, createReaction],
+    reactions: updateReactions,
+    engagement: {
+      ...comment.engagement,
+      reactions: updateReactions.length,
+    }
   };
 
   const restComments = blog.comments.filter(

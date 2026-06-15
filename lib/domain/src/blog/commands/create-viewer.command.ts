@@ -38,10 +38,16 @@ export const toCreateViewerArgs = (
     lastName: user.lastName,
   };
 
+  const updateViewers = [...existing.viewers, createViewer];
+
   return {
     id: existing._id,
     updates: {
-      viewers: [...existing.viewers, createViewer],
+      viewers: updateViewers,
+      engagement: {
+        ...existing.engagement,
+        views: updateViewers.length
+      }
     },
   };
 };

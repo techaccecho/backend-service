@@ -69,9 +69,15 @@ export const toCreateCommentReplyReactionArgs = (
     (existingReply) => existingReply.id !== reply.id,
   );
 
+  const updateReplies = [...restReplies, updateCommentReply];
+
   const updateComment = {
     ...comment,
-    replies: [...restReplies, updateCommentReply],
+    replies: updateReplies,
+    engagement: {
+      ...comment.engagement,
+      comments: updateReplies.length,
+    }
   };
 
   const restComments = blog.comments.filter(

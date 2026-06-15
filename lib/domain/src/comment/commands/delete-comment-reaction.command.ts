@@ -45,6 +45,10 @@ export const toDeleteCommentReactionArgs = (
   const updateComment = {
     ...comment,
     reactions: restReactions,
+    engagement: {
+      ...comment.engagement,
+      reactions: restReactions.length
+    }
   };
 
   const restComments = blog.comments.filter(

@@ -6,10 +6,16 @@
   "packageManager": "pnpm@10.33.2",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "scripts": {
     "dev": "tsx watch --env-file=.env src/index.ts",
     "build": "tsc -b",
-    "clean": "tsc -b --clean",
+    "clean": "rm -rf dist node_modules",
     "start": "node --env-file=.env dist/index.js",
     "typecheck": "pnpm -r typecheck",
     "lint": "biome check .",
@@ -18,22 +24,22 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@lib/data": "workspace:*",
-    "@lib/util": "workspace:*",
-    "@lib/domain": "workspace:*",
     "@fastify/auth": "^5.0.4",
     "@fastify/env": "^6.0.0",
     "@fastify/jwt": "^10.0.0",
     "@fastify/swagger": "^9.7.0",
     "@fastify/swagger-ui": "^5.2.6",
     "@fastify/type-provider-typebox": "^6.1.0",
+    "@lib/data": "workspace:*",
+    "@lib/domain": "workspace:*",
+    "@lib/util": "workspace:*",
     "@sinclair/typebox": "^0.34.49",
     "ajv-formats": "^3.0.1",
     "convex": "^1.36.1",
     "dotenv": "^17.4.2",
     "fastify": "^5.8.5",
     "fastify-plugin": "^5.1.0",
-    "jwks-rsa": "^4.0.1",
+    "jwks-rsa": "^3.2.2",
     "mediatr-ts": "^2.2.0",
     "reflect-metadata": "^0.2.2",
     "tsyringe": "^4.10.0"
@@ -50,7 +56,6 @@
     "husky": "^9.1.7",
     "tsup": "^8.5.1",
     "tsx": "^4.21.0",
-    "typescript": "^6.0.3",
     "vitest": "^4.1.5"
   }
 }

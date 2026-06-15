@@ -34,6 +34,10 @@ export const toDeleteCommentArgs = (
     id: blog._id,
     updates: {
       comments: restComments,
+      engagement: {
+        ...blog.engagement,
+        comments: restComments.length
+      }
     },
   };
 };

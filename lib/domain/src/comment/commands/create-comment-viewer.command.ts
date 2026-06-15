@@ -45,9 +45,15 @@ export const toCreateCommentViewerArgs = (
     lastName: user.lastName,
   };
 
+  const updateViewers = [...comment.viewers, createViewer];
+
   const updateComment = {
     ...comment,
-    viewers: [...comment.viewers, createViewer],
+    viewers: updateViewers,
+    engagement: {
+      ...comment.engagement,
+      views: updateViewers.length
+    }
   };
 
   const restComments = blog.comments.filter(

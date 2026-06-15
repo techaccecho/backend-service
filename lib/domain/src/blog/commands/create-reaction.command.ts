@@ -48,10 +48,16 @@ export const toCreateReactionArgs = (
     updatedAt: null,
   };
 
+  const updateReactions = [...existing.reactions, createReaction];
+
   return {
     id: existing._id,
     updates: {
-      reactions: [...existing.reactions, createReaction],
+      reactions: updateReactions,
+      engagement: {
+        ...existing.engagement,
+        reactions: updateReactions.length,
+      },
     },
   };
 };
