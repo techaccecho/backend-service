@@ -1,12 +1,10 @@
 {
   "version": 2,
-  "builds": [
-    { "src": "api/blog.ts", "use": "@vercel/node" }
-  ],
-  "rewrites": [
+  "outputDirectory": "dist",
+  "routes": [
     {
-      "source": "/blog/(.*)",
-      "destination": "/api/blog"
+      "src": "/(.*)",
+      "dest": "/apps/blog-service/dist/api/index.js"
     }
   ]
 }
