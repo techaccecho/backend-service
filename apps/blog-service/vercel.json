@@ -1,7 +1,7 @@
 {
   "version": 2,
   "outputDirectory": "dist",
-  "buildCommand": "pnpm build",
+  "buildCommand": "pnpm run build",
   "builds": [
     {
       "src": "dist/api/index.js",
