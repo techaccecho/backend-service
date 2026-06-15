@@ -24,6 +24,7 @@
     "game-service": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "@vercel/node": "^5.8.12"
   }
 }

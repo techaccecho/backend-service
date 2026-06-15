@@ -1,9 +1,9 @@
 {
   "version": 2,
-  "routes": [
+  "rewrites": [
     {
-      "src": "/blog/(.*)",
-      "dest": "apps/blog-service/src/api/index.js"
+      "source": "/blog/(.*)",
+      "destination": "/api/blog"
     }
   ]
 }
