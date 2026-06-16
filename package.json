@@ -6,7 +6,7 @@
     "build": "pnpm -r run build",
     "build:admin": "pnpm --filter admin-service build",
     "build:auth": "pnpm --filter auth-service build",
-    "build:blog": "pnpm --filter blog-service build",
+    "build:api:blog": "pnpm --filter blog-service build:api",
     "build:game": "pnpm --filter game-service build",
     "start:admin": "pnpm --filter admin-service start",
     "start:auth": "pnpm --filter auth-service start",

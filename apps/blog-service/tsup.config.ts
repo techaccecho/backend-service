@@ -2,6 +2,7 @@ import { defineConfig } from 'tsup';
 
 export default defineConfig({
   entry: ['src/api/index.ts'],
+  outDir: 'api',
   format: ['esm'],
   dts: false,
   tsconfig: 'tsconfig.json',
