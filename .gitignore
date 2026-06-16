@@ -84,7 +84,8 @@ dist
 .output
 
 # Vercel
-
+**/api/
+!**/src/api/
 
 # Gatsby files
 .cache/
