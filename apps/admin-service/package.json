@@ -8,7 +8,8 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "dev": "tsx watch --env-file=.env src/index.ts",
-    "build": "tsc -b",
+    "build:server": "tsc -b",
+    "build:api": "pnpm --filter=@lib/* build && tsup",
     "clean": "rm -rf dist node_modules",
     "start": "node --env-file=.env dist/index.js",
     "typecheck": "pnpm -r typecheck",
@@ -34,7 +35,7 @@
     "dotenv": "^17.4.2",
     "fastify": "^5.8.5",
     "fastify-plugin": "^5.1.0",
-    "jwks-rsa": "^4.0.1",
+    "jwks-rsa": "^3.2.2",
     "mediatr-ts": "^2.2.0",
     "reflect-metadata": "^0.2.2",
     "tsyringe": "^4.10.0"

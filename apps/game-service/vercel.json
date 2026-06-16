@@ -1,9 +1,10 @@
 {
-  "outputDirectory": "apps/game-service/dist",
-  "rewrites": [
+  "buildCommand": "pnpm build:api",
+  "outputDirectory": "api",
+  "routes": [
     {
-      "source": "/(.*)",
-      "destination": "/api"
+      "src": "/(.*)",
+      "dest": "/api/index.js"
     }
   ]
 }
