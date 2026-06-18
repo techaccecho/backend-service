@@ -21,8 +21,8 @@ export const CreateBlogSchema = Type.Object({
   content: Type.String({
     description: 'The actual content/description of the blog',
   }),
-  userId: Type.String({ description: 'The id of the blog writer' }),
-  type: Type.Union([Type.Literal('post'), Type.Literal('topic')], {
+  authorId: Type.String({ description: 'The id of the blog writer' }),
+  type: Type.Union([Type.Literal('post'), Type.Literal('thread')], {
     description: 'The type of the blog. Whether its a blog post or a topic',
   }),
   tags: Type.Optional(
@@ -70,7 +70,7 @@ export const toCreateBlogArgs = (
 ): CreateBlogArgs => {
   const { create, user } = request;
 
-  const createUser = {
+  const createAuthor = {
     id: user.id,
     email: user.email,
     alias: user.alias,
@@ -100,7 +100,7 @@ export const toCreateBlogArgs = (
     id: uuid(),
     title: create.title,
     content: create.content,
-    user: createUser,
+    author: createAuthor,
     type: create.type,
     tags: [],
     priority: create.priority ?? 5,
@@ -108,9 +108,10 @@ export const toCreateBlogArgs = (
     isPinned: create.isPinned ?? false,
     isLocked: create.isLocked ?? false,
     attachments: createAttachments,
+    participants: [],
+    comments: [],
     viewers: [],
     reactions: [],
-    comments: [],
     engagement: createEngagement,
     createdAt: now(),
     updatedAt: null,

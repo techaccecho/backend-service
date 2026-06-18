@@ -1,7 +1,7 @@
 import type { Doc } from '@lib/data';
 import { DataSchema, PaginatedDataSchema, toISO } from '@lib/util';
 import { type Static, Type } from '@sinclair/typebox';
-import { AttributeSchema, toAttribute } from '../util/index.js';
+import { AttributeSchema, toAttribute, AttachmentSchema, toAttachment } from '../util/index.js';
 
 export const UserSchema = Type.Object({
   _id: Type.String(),
@@ -16,6 +16,7 @@ export const UserSchema = Type.Object({
   preferences: Type.Array(AttributeSchema),
   role: Type.Union([Type.Literal('user'), Type.Literal('admin')]),
   isLocked: Type.Boolean(),
+  avatar: Type.Union([AttachmentSchema, Type.Null()]),
   createdAt: Type.String({ format: 'date-time' }),
   updatedAt: Type.Union([Type.String({ format: 'date-time' }), Type.Null()]),
   lastActivityAt: Type.String({ format: 'date-time' }),
@@ -45,6 +46,7 @@ export const toUser = (request: Doc<'users'>): User => ({
   preferences: request.preferences.map(toAttribute),
   role: request.role,
   isLocked: request.isLocked,
+  avatar: request.avatar && toAttachment(request.avatar) || null,
   createdAt: toISO(request.createdAt),
   updatedAt: toISO(request.updatedAt),
   lastActivityAt: toISO(request.lastActivityAt),

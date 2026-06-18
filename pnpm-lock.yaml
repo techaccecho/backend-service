@@ -45,6 +45,9 @@ importers:
       '@fastify/auth':
         specifier: ^5.0.4
         version: 5.0.4
+      '@fastify/cors':
+        specifier: ^11.2.0
+        version: 11.2.0
       '@fastify/env':
         specifier: ^6.0.0
         version: 6.0.0
@@ -145,6 +148,9 @@ importers:
       '@fastify/auth':
         specifier: ^5.0.4
         version: 5.0.4
+      '@fastify/cors':
+        specifier: ^11.2.0
+        version: 11.2.0
       '@fastify/env':
         specifier: ^6.0.0
         version: 6.0.0
@@ -245,6 +251,9 @@ importers:
       '@fastify/auth':
         specifier: ^5.0.4
         version: 5.0.4
+      '@fastify/cors':
+        specifier: ^11.2.0
+        version: 11.2.0
       '@fastify/env':
         specifier: ^6.0.0
         version: 6.0.0
@@ -345,6 +354,9 @@ importers:
       '@fastify/auth':
         specifier: ^5.0.4
         version: 5.0.4
+      '@fastify/cors':
+        specifier: ^11.2.0
+        version: 11.2.0
       '@fastify/env':
         specifier: ^6.0.0
         version: 6.0.0
@@ -445,6 +457,9 @@ importers:
       '@fastify/auth':
         specifier: ^5.0.4
         version: 5.0.4
+      '@fastify/cors':
+        specifier: ^11.2.0
+        version: 11.2.0
       '@fastify/env':
         specifier: ^6.0.0
         version: 6.0.0
@@ -536,6 +551,9 @@ importers:
       '@fastify/auth':
         specifier: ^5.0.4
         version: 5.0.4
+      '@fastify/cors':
+        specifier: ^11.2.0
+        version: 11.2.0
       '@fastify/env':
         specifier: ^6.0.0
         version: 6.0.0
@@ -630,6 +648,9 @@ importers:
       '@fastify/auth':
         specifier: ^5.0.4
         version: 5.0.4
+      '@fastify/cors':
+        specifier: ^11.2.0
+        version: 11.2.0
       '@fastify/env':
         specifier: ^6.0.0
         version: 6.0.0
@@ -727,6 +748,9 @@ importers:
       '@fastify/auth':
         specifier: ^5.0.4
         version: 5.0.4
+      '@fastify/cors':
+        specifier: ^11.2.0
+        version: 11.2.0
       '@fastify/env':
         specifier: ^6.0.0
         version: 6.0.0
@@ -1506,6 +1530,9 @@ packages:
   '@fastify/busboy@2.1.1':
     resolution: {integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==}
     engines: {node: '>=14'}
+
+  '@fastify/cors@11.2.0':
+    resolution: {integrity: sha512-LbLHBuSAdGdSFZYTLVA3+Ch2t+sA6nq3Ejc6XLAKiQ6ViS2qFnvicpj0htsx03FyYeLs04HfRNBsz/a8SvbcUw==}
 
   '@fastify/env@6.0.0':
     resolution: {integrity: sha512-b7FoRMdwZMF6vdhq0OHdj+xX6ggyeUq7rx+CZXnsAAgVhFbVQ7GZXb9pEzLaF3/tG8U489ZMD+Qh0RPKuNb5sQ==}
@@ -5241,6 +5268,11 @@ snapshots:
       reusify: 1.1.0
 
   '@fastify/busboy@2.1.1': {}
+
+  '@fastify/cors@11.2.0':
+    dependencies:
+      fastify-plugin: 5.1.0
+      toad-cache: 3.7.1
 
   '@fastify/env@6.0.0':
     dependencies:

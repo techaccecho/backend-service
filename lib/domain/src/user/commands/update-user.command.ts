@@ -13,7 +13,7 @@ export const UpdateUserParamsSchema = Type.Object({
 
 export type UpdateUserParams = Static<typeof UpdateUserParamsSchema>;
 
-const UpdateAttachmentSchema = Type.Partial(
+const UpdateAvatarSchema = Type.Partial(
   Type.Object({
     id: Type.String({
       format: 'uuid',
@@ -31,7 +31,7 @@ const UpdateAttachmentSchema = Type.Partial(
   }),
 );
 
-type UpdateAttachment = Static<typeof UpdateAttachmentSchema>;
+export type UpdateAvatarAttachment = Static<typeof UpdateAvatarSchema>;
 
 export const UpdateUserSchema = Type.Partial(
   Type.Object({
@@ -65,6 +65,7 @@ export const UpdateUserSchema = Type.Partial(
     isLocked: Type.Optional(
       Type.Boolean({ description: 'Whether the user is locked' }),
     ),
+    avatar: Type.Optional(UpdateAvatarSchema)
   }),
 );
 

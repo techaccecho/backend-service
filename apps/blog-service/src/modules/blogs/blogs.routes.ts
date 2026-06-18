@@ -5,6 +5,7 @@ import { Type } from '@sinclair/typebox';
 import {
     PaginatedBlogDataSchema, BlogDataSchema,
     GetBlogParamsSchema, GetBlogQuery, GetBlogsQuery,
+    GetBlogsByTypeQuery,
     CreateBlogCommand,
     CreateBlogSchema,
     CreateViewerCommand,
@@ -16,12 +17,17 @@ import {
     CreateTagCommand,
     CreateTagParamsSchema,
     CreateTagSchema,
+    CreateParticipantCommand,
+    CreateParticipantParamsSchema,
+    CreateParticipantSchema,
     DeleteBlogCommand,
     DeleteBlogParamsSchema,
     DeleteReactionCommand,
     DeleteReactionParamsSchema,
     DeleteTagCommand,
     DeleteTagParamsSchema,
+    DeleteParticipantCommand,
+    DeleteParticipantParamsSchema,
     UpdateBlogCommand,
     UpdateBlogParamsSchema,
     UpdateBlogSchema,
@@ -37,12 +43,14 @@ import {
   verifyCreateViewerHook,
   verifyCreateReactionHook,
   verifyCreateTagHook,
+  verifyCreateParticipantHook,
   verifyUpdateBlogHook,
   verifyDeleteBlogHook,
   verifyUpdateReactionHook,
   verifyDeleteReactionHook,
   verifyUpdateTagHook,
-  verifyDeleteTagHook
+  verifyDeleteTagHook,
+  verifyDeleteParticipantHook
 } from './hooks/index.js';
 
 export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
@@ -87,7 +95,7 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
           500: AppErrorSchema,
         },
       },
-      preHandler: [authenticate],
+      preHandler: [],
     },
     async (request, reply) => {
       const { params } = request;
@@ -110,7 +118,7 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
           500: AppErrorSchema,
         },
       },
-      preHandler: [authenticate],
+      preHandler: [],
     },
     async (request, reply) => {
       const query = new GetBlogsQuery({query: request.query});
@@ -169,6 +177,50 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
       const command = new DeleteBlogCommand({params, existing: blog });
       await mediator.send(command);
       return reply.status(204).send(null);
+    },
+  );
+
+  fastify.get(
+    '/posts',
+    {
+      schema: {
+        description: 'Get posts',
+        tags: ['Posts'],
+        querystring: QuerySchema,
+        response: {
+          200: PaginatedBlogDataSchema,
+          400: AppErrorSchema,
+          500: AppErrorSchema,
+        },
+      },
+      preHandler: [],
+    },
+    async (request, reply) => {
+      const query = new GetBlogsByTypeQuery({query: request.query, type: 'post'});
+      const response = await mediator.send(query);
+      return reply.status(200).send(response);
+    },
+  );
+
+  fastify.get(
+    '/threads',
+    {
+      schema: {
+        description: 'Get threads',
+        tags: ['Threads'],
+        querystring: QuerySchema,
+        response: {
+          200: PaginatedBlogDataSchema,
+          400: AppErrorSchema,
+          500: AppErrorSchema,
+        },
+      },
+      preHandler: [],
+    },
+    async (request, reply) => {
+      const query = new GetBlogsByTypeQuery({query: request.query, type: 'thread'});
+      const response = await mediator.send(query);
+      return reply.status(200).send(response);
     },
   );
 
@@ -364,6 +416,62 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
         assertRequired('tag', tag);
   
         const command = new DeleteTagCommand({params, existing: tag, blog });
+        await mediator.send(command);
+        return reply.status(204).send(null);
+      },
+    );
+
+    fastify.post(
+      '/blogs/:blogId/participants',
+      {
+        schema: {
+          description: 'Create a participant',
+          tags: ['Blogs', 'Participants'],
+          params: CreateParticipantParamsSchema,
+          body: CreateParticipantSchema,
+          response: {
+            201: BlogDataSchema,
+            400: AppErrorSchema,
+            500: AppErrorSchema,
+          },
+        },
+        preHandler: [authenticate, verifyCreateParticipantHook(convex)],
+      },
+      async (request, reply) => {
+        const { params, body, blog, userRequest } = request;
+  
+        assertRequired('blog', blog);
+        assertRequired('userRequest', userRequest);
+  
+        const command = new CreateParticipantCommand({params, create: body, user: userRequest, existing: blog});
+        const response = await mediator.send(command);
+        return reply.status(201).send(response);
+      },
+    );
+  
+    fastify.delete(
+      '/blogs/:blogId/participants/:participantId',
+      {
+        schema: {
+          description: 'Delete a participant',
+          tags: ['Blogs', 'Participants'],
+          params: DeleteParticipantParamsSchema,
+          response: {
+            204: Type.Null(),
+            400: AppErrorSchema,
+            404: AppErrorSchema,
+            500: AppErrorSchema,
+          },
+        },
+        preHandler: [authenticate, verifyDeleteParticipantHook(convex)],
+      },
+      async (request, reply) => {
+        const { params, blog, participant } = request;
+  
+        assertRequired('blog', blog);
+        assertRequired('participant', participant);
+  
+        const command = new DeleteParticipantCommand({params, existing: participant, blog });
         await mediator.send(command);
         return reply.status(204).send(null);
       },

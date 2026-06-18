@@ -1,6 +1,9 @@
 export * from './create-blog.command.js';
 export * from './create-blog.handler.js';
 
+export * from './create-participant.command.js';
+export * from './create-participant.handler.js';
+
 export * from './create-tag.command.js';
 export * from './create-tag.handler.js';
 
@@ -12,6 +15,9 @@ export * from './create-reaction.handler.js';
 
 export * from './delete-blog.command.js';
 export * from './delete-blog.handler.js';
+
+export * from './delete-participant.command.js';
+export * from './delete-participant.handler.js';
 
 export * from './delete-reaction.command.js';
 export * from './delete-reaction.handler.js';

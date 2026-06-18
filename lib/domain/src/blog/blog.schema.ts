@@ -42,7 +42,7 @@ export type Reaction = Static<typeof ReactionSchema>;
 
 export const ReplySchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
-  user: UserPreviewSchema,
+  author: UserPreviewSchema,
   content: Type.Union([Type.String(), Type.Null()]),
   createdAt: Type.String({ format: 'date-time' }),
   updatedAt: Type.Union([Type.String({ format: 'date-time' }), Type.Null()]),
@@ -52,7 +52,7 @@ export type Reply = Static<typeof ReplySchema>;
 
 export const CommentSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
-  user: UserPreviewSchema,
+  author: UserPreviewSchema,
   content: Type.String(),
   replies: Type.Array(ReplySchema),
   attachments: Type.Array(AttachmentSchema),
@@ -68,15 +68,16 @@ export type Comment = Static<typeof CommentSchema>;
 export const BlogSchema = Type.Object({
   _id: Type.String(),
   id: Type.String({ format: 'uuid' }),
-  user: UserPreviewSchema,
+  author: UserPreviewSchema,
   title: Type.String(),
   content: Type.String(),
-  type: Type.Union([Type.Literal('post'), Type.Literal('topic')]),
+  type: Type.Union([Type.Literal('post'), Type.Literal('thread')]),
   tags: Type.Array(AttributeSchema),
   priority: Type.Number(),
   isDraft: Type.Boolean(),
   isPinned: Type.Boolean(),
   isLocked: Type.Boolean(),
+  participants: Type.Array(UserPreviewSchema),
   comments: Type.Array(CommentSchema),
   attachments: Type.Array(AttachmentSchema),
   viewers: Type.Array(UserPreviewSchema),

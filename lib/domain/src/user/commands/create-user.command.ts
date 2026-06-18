@@ -35,6 +35,19 @@ export const CreateUserSchema = Type.Object({
   isLocked: Type.Optional(
     Type.Boolean({ description: 'Whether the user is locked' }),
   ),
+  avatar: Type.Optional(
+    Type.Object({
+      type: Type.Union([Type.Literal('media/image')], {
+        description: 'Type of attachment',
+      }),
+      url: Type.Optional(Type.String({ description: 'URL of the attachment' })),
+      content: Type.Optional(
+        Type.String({
+          description: 'Base64 encoded actual content of the attachment',
+        }),
+      ),
+    })
+  )
 });
 
 export type CreateUser = Static<typeof CreateUserSchema>;
@@ -47,6 +60,7 @@ export const toCreateUserArgs = (
   request: CreateUserRequest,
 ): CreateUserArgs => {
   const { create } = request;
+  const { avatar } = create;
 
   const createPreferences =
     create.preferences?.map((preference) => ({
@@ -56,6 +70,15 @@ export const toCreateUserArgs = (
       createdAt: now(),
       updatedAt: null,
     })) ?? [];
+
+  const createAvatar = avatar && {
+    id: uuid(),
+    type: avatar.type,
+    url: avatar.url ?? null,
+    content: avatar.content ?? null,
+    createdAt: now(),
+    updatedAt: null,
+  } || null;
 
   return {
     id: uuid(),
@@ -69,7 +92,7 @@ export const toCreateUserArgs = (
     preferences: createPreferences,
     role: create.role ?? 'user',
     isLocked: create.isLocked ?? false,
-    avatar: null,
+    avatar: createAvatar,
     createdAt: now(),
     updatedAt: null,
     lastActivityAt: now(),

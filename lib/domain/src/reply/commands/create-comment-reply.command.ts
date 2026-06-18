@@ -32,7 +32,7 @@ export const CreateCommentReplyAttachmentSchema = Type.Object({
 });
 
 export const CreateCommentReplySchema = Type.Object({
-  userId: Type.String(),
+  authorId: Type.String(),
   content: Type.String({
     description: 'The actual content',
   }),
@@ -58,7 +58,7 @@ export const toCreateCommentReplyArgs = (
 ): UpdateBlogArgs => {
   const { create, blog, comment, user } = request;
 
-  const createUser = {
+  const createAuthor = {
     id: user.id,
     email: user.email,
     alias: user.alias,
@@ -86,7 +86,7 @@ export const toCreateCommentReplyArgs = (
 
   const createReply = {
     id: uuid(),
-    user: createUser,
+    author: createAuthor,
     content: create.content,
     attachments: createAttachments,
     viewers: [],

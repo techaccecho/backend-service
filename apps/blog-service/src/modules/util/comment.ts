@@ -25,7 +25,7 @@ export const verifyMutateComment = async (convex: ConvexHttpClient, request: Fas
         return;
     }
 
-    if (comment.user.id !== auth.user.id) {
+    if (comment.author.id !== auth.user.id) {
         throw new ForbiddenError();
     }
 

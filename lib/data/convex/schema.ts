@@ -86,7 +86,7 @@ export type CommentParentEntity = Infer<typeof CommentParentEntitySchema>;
 
 export const ReplyEntitySchema = v.object({
   id: v.string(),
-  user: UserPreviewEntitySchema,
+  author: UserPreviewEntitySchema,
   content: v.string(),
   attachments: v.array(AttachmentEntitySchema),
   viewers: v.array(UserPreviewEntitySchema),
@@ -100,7 +100,7 @@ export type ReplyEntity = Infer<typeof ReplyEntitySchema>;
 
 export const CommentEntitySchema = v.object({
   id: v.string(),
-  user: UserPreviewEntitySchema,
+  author: UserPreviewEntitySchema,
   content: v.string(),
   replies: v.array(ReplyEntitySchema),
   attachments: v.array(AttachmentEntitySchema),
@@ -115,8 +115,8 @@ export type CommentEntity = Infer<typeof CommentEntitySchema>;
 
 export const BlogEntitySchema = v.object({
   id: v.string(),
-  user: UserPreviewEntitySchema,
-  type: v.union(v.literal('post'), v.literal('topic')),
+  author: UserPreviewEntitySchema,
+  type: v.union(v.literal('post'), v.literal('thread')),
   tags: v.array(AttributeEntitySchema),
   title: v.string(),
   content: v.string(),
@@ -124,6 +124,7 @@ export const BlogEntitySchema = v.object({
   isDraft: v.boolean(),
   isPinned: v.boolean(),
   isLocked: v.boolean(),
+  participants: v.array(UserPreviewEntitySchema),
   comments: v.array(CommentEntitySchema),
   attachments: v.array(AttachmentEntitySchema),
   viewers: v.array(UserPreviewEntitySchema),
@@ -212,7 +213,7 @@ export type CreateBlogArgs = Infer<typeof BlogEntitySchema>;
 export const UpdateBlogSchema = v.object({
   id: v.id('blogs'),
   updates: v.object({
-    type: v.optional(v.union(v.literal('post'), v.literal('topic'))),
+    type: v.optional(v.union(v.literal('post'), v.literal('thread'))),
     tags: v.optional(v.array(AttributeEntitySchema)),
     title: v.optional(v.string()),
     content: v.optional(v.string()),
@@ -220,6 +221,7 @@ export const UpdateBlogSchema = v.object({
     isDraft: v.optional(v.boolean()),
     isPinned: v.optional(v.boolean()),
     isLocked: v.optional(v.boolean()),
+    participants: v.optional(v.array(UserPreviewEntitySchema)),
     comments: v.optional(v.array(CommentEntitySchema)),
     reactions: v.optional(v.array(ReactionEntitySchema)),
     attachments: v.optional(v.array(AttachmentEntitySchema)),
@@ -271,6 +273,7 @@ export const UpdateUserSchema = v.object({
     preferences: v.optional(v.array(AttributeEntitySchema)),
     role: v.optional(v.union(v.literal('user'), v.literal('admin'))),
     isLocked: v.optional(v.boolean()),
+    avatar: v.optional(AttachmentEntitySchema),
     updatedAt: v.optional(v.number()),
     lastActivityAt: v.optional(v.number()),
   }),
@@ -279,7 +282,7 @@ export const UpdateUserSchema = v.object({
 export type UpdateUserArgs = Infer<typeof UpdateUserSchema>;
 
 export const BlogTypeSchema = v.object({
-  type: v.union(v.literal('post'), v.literal('topic')),
+  type: v.union(v.literal('post'), v.literal('thread')),
   paginationOpts: paginationOptsValidator,
 });
 

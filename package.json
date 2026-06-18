@@ -4,6 +4,10 @@
   "scripts": {
     "clean": "pnpm -r run clean && rm -rf node_modules",
     "build": "pnpm -r run build",
+    "dev:admin": "pnpm --filter admin-service dev",
+    "dev:auth": "pnpm --filter auth-service dev",
+    "dev:blog": "pnpm --filter blog-service dev",
+    "dev:game": "pnpm --filter game-service dev",
     "build:admin": "pnpm --filter admin-service build",
     "build:auth": "pnpm --filter auth-service build",
     "build:blog": "pnpm --filter blog-service build",

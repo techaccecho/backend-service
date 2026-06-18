@@ -12,6 +12,7 @@ import Fastify, {
   type RawRequestDefaultExpression,
   type RawServerDefault,
 } from 'fastify';
+import cors from '@fastify/cors';
 import {
   authPlugin,
   configPlugin,
@@ -85,6 +86,13 @@ export const bootstrap = async (
     routePrefix: `${routePrefix}/docs`,
   });
 
+  // Cors
+  await app.register(cors, {
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  });
+
+  // Routes
   await app.register(routesPlugin, { routePrefix });
 
   return app;

@@ -23,7 +23,7 @@ export const verifyMutateBlog = async (convex: ConvexHttpClient, request: Fastif
         return;
     }
 
-    if (response.user.id !== auth.user.id) {
+    if (response.author.id !== auth.user.id) {
         throw new ForbiddenError();
     }
 
@@ -76,6 +76,26 @@ export const verifyMutateTag = async (convex: ConvexHttpClient, request: Fastify
     }
 
     request.tag = tagResponse;
+}
+
+export const verifyMutateParticipant = async (convex: ConvexHttpClient, request: FastifyRequest) => {
+    await verifyMutateBlog(convex, request);
+
+    const { auth, params, blog } = request;
+
+    assertRequired('auth', auth);
+    assertHasStringKey(params, 'participantId');
+    assertRequired('blog', blog);
+
+    const { participantId } = params;
+
+    const participantResponse = blog.participants.find(participant => participant.id == participantId);
+
+    if (participantResponse == null) {
+        throw new NotFoundError({ resource: `participant with id ${participantId}` });
+    }
+
+    request.participant = participantResponse;
 }
 
 export const verifyUpdateBlog = async (convex: ConvexHttpClient, validation: AsyncValidation, request: FastifyRequest) => {
