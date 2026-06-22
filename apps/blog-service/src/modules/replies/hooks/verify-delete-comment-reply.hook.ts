@@ -4,6 +4,6 @@ import { verifyMutateCommentReply } from '../../util/index.js';
 
 export const verifyDeleteCommentReplyHook = (convex: ConvexHttpClient) => {
     return async (request: FastifyRequest, _: FastifyReply) => {
-        await verifyMutateCommentReply(convex, request);
+        await verifyMutateCommentReply(convex, request, false);
     }
 }

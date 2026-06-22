@@ -6,7 +6,7 @@ import { verifyMutateCommentReply } from '../../util/index.js';
 
 export const verifyUpdateCommentReplyHook = (convex: ConvexHttpClient, validation: AsyncValidation) => {
     return async (request: FastifyRequest, _: FastifyReply) => {
-      await verifyMutateCommentReply(convex, request);
+      await verifyMutateCommentReply(convex, request, false);
 
       const update = request.body as UpdateCommentReply;
 

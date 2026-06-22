@@ -22,49 +22,33 @@ export const verifyApiKey = (config: Config) => {
   };
 };
 
-export const verifyJwt = (convex: ConvexHttpClient) => {
+export const verifyJwt = (convex: ConvexHttpClient, verifyUser = true) => {
   return async (request: FastifyRequest, _reply: FastifyReply) => {
+    console.log("use", request.user);
     try {
       if (request.headers.authorization == null) {
         throw new UnauthorizedError();
       }
 
       await request.jwtVerify();
+
+      if (!verifyUser) {
+        return;
+      }
+
       const { user } = request;
       const authId = user.sub;
-      const email = user.email ?? '';
 
-      try {
-        const userResponse = await convex.query(api.users.findByAuthId, { authId });
+      const userResponse = await convex.query(api.users.findByAuthId, { authId });
 
-        if (userResponse == null) {
-            throw new NotFoundError({ resource: `user with authId ${authId}` });
-        }
-
-        request.auth = {
-          type: 'user',
-          user: userResponse,
-        };
-      } catch (err) {
-        request.log.info('A Jwt for an unregistered was sent. Attempting to auto register user');
-
-        if (err instanceof NotFoundError) {
-          const create =  toCreateUserArgs({ create: { authId, email}});
-          const { id } = create;
-          await convex.mutation(api.users.create, create);
-          const created = await convex.query(api.users.find, { id });
-
-          if (created == null) {
-            request.log.warn('Created user missing');
-            throw new NotFoundError({ resource: `user with id ${id}` });
-          }
-
-          request.auth = {
-            type: 'user',
-            user: created,
-          };
-        }
+      if (userResponse == null) {
+          throw new NotFoundError({ resource: `user with authId ${authId}` });
       }
+
+      request.auth = {
+        type: 'user',
+        user: userResponse,
+      };
     } catch (_err) {
        console.log(_err);
       throw new UnauthorizedError();

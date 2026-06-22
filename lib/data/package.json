@@ -14,7 +14,7 @@
   },
   "scripts": {
     "dev": "convex dev",
-    "build": "tsc -b",
+    "build": "rm -rf dist && tsc -b",
     "clean": "rm -rf dist node_modules",
     "start": "node --env-file=.env dist/index.js",
     "typecheck": "pnpm -r typecheck",

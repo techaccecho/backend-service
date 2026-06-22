@@ -36,7 +36,7 @@ export const usersRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
           500: AppErrorSchema,
         },
       },
-      preHandler: [authenticate, verifyCreateUserHook(validation)],
+      preHandler: [authenticate(), verifyCreateUserHook(validation)],
     },
     async (request, reply) => {
       const { body } = request;
@@ -61,7 +61,7 @@ export const usersRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
           500: AppErrorSchema,
         },
       },
-      preHandler: [authenticate],
+      preHandler: [authenticate()],
     },
     async (request, reply) => {
       const { params } = request;
@@ -84,7 +84,7 @@ export const usersRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
           500: AppErrorSchema,
         },
       },
-      preHandler: [authenticate],
+      preHandler: [authenticate()],
     },
     async (request, reply) => {
       const query = new GetUsersQuery({query: request.query});
@@ -108,7 +108,7 @@ export const usersRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
           500: AppErrorSchema,
         },
       },
-      preHandler: [authenticate, verifyUpdateUserHook(convex)],
+      preHandler: [authenticate(), verifyUpdateUserHook(convex)],
     },
     async (request, reply) => {
       const { params, body, userRequest } = request;
@@ -134,7 +134,7 @@ export const usersRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
           500: AppErrorSchema,
         },
       },
-      preHandler: [authenticate, verifyDeleteUserHook(convex)],
+      preHandler: [authenticate(), verifyDeleteUserHook(convex)],
     },
     async (request, reply) => {
       const { params, userRequest } = request;

@@ -1,6 +1,6 @@
 import fastifyAuth from '@fastify/auth';
 import fastifyJwt, { type TokenOrHeader } from '@fastify/jwt';
-import type { FastifyRequest } from 'fastify';
+import type { FastifyRequest, FastifyReply } from 'fastify';
 import fp from 'fastify-plugin';
 import jwksClient from 'jwks-rsa';
 import { verifyApiKey, verifyJwt } from '../modules/index.js';
@@ -37,10 +37,12 @@ export const authPlugin = fp(async (fastify) => {
 
   await fastify.register(fastifyAuth);
 
+  const authenticateHook = (verifyUser = true) => async (request: FastifyRequest, _reply: FastifyReply) => fastify.auth([verifyApiKey(config), verifyJwt(convex, verifyUser)], {
+      relation: 'or',
+    });
+
   fastify.decorate(
     'authenticate',
-    fastify.auth([verifyApiKey(config), verifyJwt(convex)], {
-      relation: 'or',
-    }),
+    authenticateHook
   );
 });

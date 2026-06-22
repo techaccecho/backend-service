@@ -8,6 +8,6 @@ export const verifyCreateViewerHook = (convex: ConvexHttpClient) => {
         Body: CreateViewer
     }>, _: FastifyReply) => {
        await verifyUserId(convex, request);
-       await verifyMutateBlog(convex, request);
+       await verifyMutateBlog(convex, request, false);
     }
 }

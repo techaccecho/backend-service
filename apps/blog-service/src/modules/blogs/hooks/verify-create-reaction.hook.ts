@@ -8,6 +8,6 @@ export const verifyCreateReactionHook = (convex: ConvexHttpClient) => {
         Body: CreateReaction
     }>, _: FastifyReply) => {
        await verifyUserId(convex, request);
-       await verifyMutateBlog(convex, request);
+       await verifyMutateBlog(convex, request, false);
     }
 }

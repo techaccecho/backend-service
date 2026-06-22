@@ -8,6 +8,6 @@ export const verifyCreateParticipantHook = (convex: ConvexHttpClient) => {
         Body: CreateParticipant
     }>, _: FastifyReply) => {
         await verifyUserId(convex, request);
-        await verifyMutateBlog(convex, request);
+        await verifyMutateBlog(convex, request, false);
     }
 }

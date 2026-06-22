@@ -5,7 +5,7 @@ import type { ConvexHttpClient } from 'convex/browser';
 import { ValidationError, AsyncValidation } from '@lib/util';
 import { UpdateBlog } from '@lib/domain';
 
-export const verifyMutateBlog = async (convex: ConvexHttpClient, request: FastifyRequest) => {
+export const verifyMutateBlog = async (convex: ConvexHttpClient, request: FastifyRequest, verifyAuthor: boolean = true) => {
     const { auth } = request;
 
     assertRequired('auth', auth);
@@ -23,7 +23,7 @@ export const verifyMutateBlog = async (convex: ConvexHttpClient, request: Fastif
         return;
     }
 
-    if (response.author.id !== auth.user.id) {
+    if (verifyAuthor && response.author.id !== auth.user.id) {
         throw new ForbiddenError();
     }
 
@@ -31,7 +31,7 @@ export const verifyMutateBlog = async (convex: ConvexHttpClient, request: Fastif
 }
 
 export const verifyMutateReaction = async (convex: ConvexHttpClient, request: FastifyRequest) => {
-    await verifyMutateBlog(convex, request);
+    await verifyMutateBlog(convex, request, false);
     
     const { auth, params, blog } = request;
 

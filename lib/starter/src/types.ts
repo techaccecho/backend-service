@@ -11,7 +11,7 @@ declare module 'fastify' {
      config: Config;
      mediator: Mediator;
      convex: ConvexHttpClient;
-     authenticate: preHandlerHookHandler;
+     authenticate: (verifyUser?: boolean) => preHandlerHookHandler;
   }
   interface FastifyRequest {
     auth?: Auth;
