@@ -92,9 +92,15 @@ export const toCreateCommentArgs = (
 
   const updateComments = [...existing.comments, createComment];
 
+  const createParticipant = existing.participants.find(participant => participant.id === createComment.author.id);
+
+  const updateParticipants = createParticipant != null ? existing.participants : [...existing.participants, createComment.author];
+
+
   return {
     id: existing._id,
     updates: {
+      participants: updateParticipants,
       comments: updateComments,
       engagement: {
         ...existing.engagement,

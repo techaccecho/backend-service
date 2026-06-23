@@ -20,9 +20,9 @@ export const ConfigSchema = Type.Object({
     { default: 'error' },
   ),
   API_KEY: Type.String(),
-  AUTH_JWKS_URI: Type.String(),
-  AUTH_AUDIENCE: Type.String(),
-  AUTH_ISSUER: Type.String(),
+  AUTH_DOMAIN: Type.String(),
+  AUTH_CLIENT_ID: Type.String(),
+  AUTH_CLIENT_SECRET: Type.String()
 });
 
 export type Config = Static<typeof ConfigSchema>;

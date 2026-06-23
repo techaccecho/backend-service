@@ -9,6 +9,7 @@ import {
 } from '@lib/util';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import type { ConvexHttpClient } from 'convex/browser';
+import { fetchAuth0User } from '../util/index.js';
 
 export const verifyApiKey = (config: Config) => {
   return async (request: FastifyRequest, _: FastifyReply) => {
@@ -22,9 +23,9 @@ export const verifyApiKey = (config: Config) => {
   };
 };
 
-export const verifyJwt = (convex: ConvexHttpClient, verifyUser = true) => {
+export const verifyJwt = (config: Config, convex: ConvexHttpClient) => {
   return async (request: FastifyRequest, _reply: FastifyReply) => {
-    console.log("use", request.user);
+
     try {
       if (request.headers.authorization == null) {
         throw new UnauthorizedError();
@@ -32,23 +33,46 @@ export const verifyJwt = (convex: ConvexHttpClient, verifyUser = true) => {
 
       await request.jwtVerify();
 
-      if (!verifyUser) {
-        return;
-      }
-
       const { user } = request;
       const authId = user.sub;
 
       const userResponse = await convex.query(api.users.findByAuthId, { authId });
 
-      if (userResponse == null) {
-          throw new NotFoundError({ resource: `user with authId ${authId}` });
+      if (userResponse != null) {
+        request.auth = {
+          type: 'user',
+          user: userResponse,
+        };
+
+        request.userRequest = userResponse;
+
+        return;
+      };
+
+      const { nickname, name, picture, email, } = await fetchAuth0User(authId, config);
+
+      const create = {
+        authId,
+        email,
+        alias: (nickname || name) ?? undefined,
+        avatar: picture != null ? { url: picture, type: 'media/image' as const } : undefined,
+      };
+      
+      const args = toCreateUserArgs({ create });
+
+      await convex.mutation(api.users.create, args);
+
+      const created = await convex.query(api.users.find, { id: args.id });
+
+      if (created == null) {
+        throw new NotFoundError({ resource: `user with authId ${authId}` });
       }
 
       request.auth = {
         type: 'user',
-        user: userResponse,
+        user: created
       };
+      request.userRequest = created;
     } catch (_err) {
        console.log(_err);
       throw new UnauthorizedError();

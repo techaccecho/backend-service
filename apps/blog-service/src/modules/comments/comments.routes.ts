@@ -52,7 +52,7 @@ export const commentsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
           500: AppErrorSchema,
         },
       },
-      preHandler: [authenticate(), verifyCreateCommentHook(convex)],
+      preHandler: [authenticate, verifyCreateCommentHook(convex)],
     },
     async (request, reply) => {
       const { params, body, blog, userRequest } = request;
@@ -81,7 +81,7 @@ export const commentsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
           500: AppErrorSchema,
         },
       },
-      preHandler: [authenticate(), verifyUpdateCommentHook(convex, validation)],
+      preHandler: [authenticate, verifyUpdateCommentHook(convex, validation)],
     },
     async (request, reply) => {
       const { params, body, blog, comment } = request;
@@ -109,7 +109,7 @@ export const commentsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
           500: AppErrorSchema,
         },
       },
-      preHandler: [authenticate(), verifyDeleteCommentHook(convex)],
+      preHandler: [authenticate, verifyDeleteCommentHook(convex)],
     },
     async (request, reply) => {
       const { params, blog, comment } = request;
@@ -137,7 +137,7 @@ export const commentsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
             500: AppErrorSchema,
           },
         },
-        preHandler: [authenticate(), verifyCreateCommentViewerHook(convex)],
+        preHandler: [authenticate, verifyCreateCommentViewerHook(convex)],
       },
       async (request, reply) => {
         const { params, body, blog, comment, userRequest } = request;
@@ -166,7 +166,7 @@ export const commentsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
             500: AppErrorSchema,
           },
         },
-        preHandler: [authenticate(), verifyCreateCommentReactionHook(convex)],
+        preHandler: [authenticate, verifyCreateCommentReactionHook(convex)],
       },
       async (request, reply) => {
         const { params, body, blog, comment, userRequest } = request;
@@ -196,7 +196,7 @@ export const commentsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
             500: AppErrorSchema,
           },
         },
-        preHandler: [authenticate(), verifyUpdateCommentReactionHook(convex, validation)],
+        preHandler: [authenticate, verifyUpdateCommentReactionHook(convex, validation)],
       },
       async (request, reply) => {
         const { params, body, blog, comment, reaction } = request;
@@ -225,7 +225,7 @@ export const commentsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
             500: AppErrorSchema,
           },
         },
-        preHandler: [authenticate(), verifyDeleteCommentReactionHook(convex)],
+        preHandler: [authenticate, verifyDeleteCommentReactionHook(convex)],
       },
       async (request, reply) => {
         const { params, blog, comment, reaction } = request;

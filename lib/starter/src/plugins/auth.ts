@@ -1,6 +1,6 @@
 import fastifyAuth from '@fastify/auth';
 import fastifyJwt, { type TokenOrHeader } from '@fastify/jwt';
-import type { FastifyRequest, FastifyReply } from 'fastify';
+import type { FastifyRequest } from 'fastify';
 import fp from 'fastify-plugin';
 import jwksClient from 'jwks-rsa';
 import { verifyApiKey, verifyJwt } from '../modules/index.js';
@@ -9,7 +9,7 @@ export const authPlugin = fp(async (fastify) => {
   const { config, convex } = fastify;
 
   const client = jwksClient({
-    jwksUri: config.AUTH_JWKS_URI,
+    jwksUri: `${config.AUTH_DOMAIN}/.well-known/jwks.json`,
     cache: true,
     rateLimit: true,
     jwksRequestsPerMinute: 5,
@@ -29,20 +29,18 @@ export const authPlugin = fp(async (fastify) => {
     },
 
     verify: {
-      allowedAud: config.AUTH_AUDIENCE,
-      allowedIss: config.AUTH_ISSUER,
+      allowedAud: `${config.AUTH_DOMAIN}/api/v2/`,
+      allowedIss: `${config.AUTH_DOMAIN}/`,
       algorithms: ['RS256'],
     },
   });
 
   await fastify.register(fastifyAuth);
 
-  const authenticateHook = (verifyUser = true) => async (request: FastifyRequest, _reply: FastifyReply) => fastify.auth([verifyApiKey(config), verifyJwt(convex, verifyUser)], {
-      relation: 'or',
-    });
-
   fastify.decorate(
     'authenticate',
-    authenticateHook
+    fastify.auth([verifyApiKey(config), verifyJwt(config, convex)], {
+      relation: 'or',
+    }),
   );
 });

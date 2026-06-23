@@ -1,44 +1,12 @@
 import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import { container } from 'tsyringe';
-import { AppErrorSchema, assertRequired, AsyncValidation } from '@lib/util';
+import { AppErrorSchema, assertRequired, toData } from '@lib/util';
 import {
     UserDataSchema,
-    CreateUserCommand,
-    CreateUserSchema,
-    GetUserByAuthIdParamsSchema,
-    GetUserByAuthIdQuery
+    toUser
   } from '@lib/domain';
-import {
-  verifyCreateUserHook,
-} from './hooks/index.js';
 
 export const authRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
-  const validation = container.resolve(AsyncValidation);
-  const { authenticate, mediator } = fastify;
-
-  fastify.post(
-    '/auth',
-    {
-      schema: {
-        description: 'Register',
-        tags: ['Auth'],
-        body: CreateUserSchema,
-        response: {
-          201: UserDataSchema,
-          400: AppErrorSchema,
-          500: AppErrorSchema,
-        },
-      },
-      preHandler: [authenticate(), verifyCreateUserHook(validation)],
-    },
-    async (request, reply) => {
-      const { body } = request;
-      
-      const command = new CreateUserCommand({create: body});
-      const response = await mediator.send(command);
-      return reply.status(201).send(response);
-    },
-  );
+  const { authenticate } = fastify;
 
   fastify.get(
     '/auth',
@@ -53,15 +21,12 @@ export const authRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
           500: AppErrorSchema,
         },
       },
-      preHandler: [authenticate(false)],
+      preHandler: [authenticate],
     },
     async (request, reply) => {
-      const { user } = request;
-      assertRequired('user', user);
-
-      const query = new GetUserByAuthIdQuery({ params: {authId: user.sub }});
-      const response = await mediator.send(query);
-      return reply.status(200).send(response);
+      const { userRequest } = request;
+      assertRequired('userRequest', userRequest);
+      return reply.status(200).send(toData({ data: toUser(userRequest) }));
     },
   );
 };

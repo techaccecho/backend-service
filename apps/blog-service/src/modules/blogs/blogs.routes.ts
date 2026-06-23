@@ -70,7 +70,7 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
           500: AppErrorSchema,
         },
       },
-      preHandler: [authenticate(), verifyCreateBlogHook(convex)],
+      preHandler: [authenticate, verifyCreateBlogHook(convex)],
     },
     async (request, reply) => {
       const { body, userRequest } = request;
@@ -95,7 +95,7 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
           500: AppErrorSchema,
         },
       },
-      preHandler: [authenticate()],
+      preHandler: [],
     },
     async (request, reply) => {
       const { params } = request;
@@ -118,7 +118,7 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
           500: AppErrorSchema,
         },
       },
-      preHandler: [authenticate()],
+      preHandler: [],
     },
     async (request, reply) => {
       const query = new GetBlogsQuery({query: request.query});
@@ -142,7 +142,7 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
           500: AppErrorSchema,
         },
       },
-      preHandler: [authenticate(), verifyUpdateBlogHook(convex, validation)],
+      preHandler: [authenticate, verifyUpdateBlogHook(convex, validation)],
     },
     async (request, reply) => {
       const { params, body, blog } = request;
@@ -168,7 +168,7 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
           500: AppErrorSchema,
         },
       },
-      preHandler: [authenticate(), verifyDeleteBlogHook(convex)],
+      preHandler: [authenticate, verifyDeleteBlogHook(convex)],
     },
     async (request, reply) => {
       const { params, blog } = request;
@@ -238,7 +238,7 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
             500: AppErrorSchema,
           },
         },
-        preHandler: [authenticate(), verifyCreateViewerHook(convex)],
+        preHandler: [authenticate, verifyCreateViewerHook(convex)],
       },
       async (request, reply) => {
         const { params, body, blog, userRequest } = request;
@@ -266,7 +266,7 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
             500: AppErrorSchema,
           },
         },
-        preHandler: [authenticate(), verifyCreateReactionHook(convex)],
+        preHandler: [authenticate, verifyCreateReactionHook(convex)],
       },
       async (request, reply) => {
         const { params, body, blog, userRequest } = request;
@@ -295,7 +295,7 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
             500: AppErrorSchema,
           },
         },
-        preHandler: [authenticate(), verifyUpdateReactionHook(convex, validation)],
+        preHandler: [authenticate, verifyUpdateReactionHook(convex, validation)],
       },
       async (request, reply) => {
         const { params, body, blog, reaction } = request;
@@ -323,7 +323,7 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
             500: AppErrorSchema,
           },
         },
-        preHandler: [authenticate(), verifyDeleteReactionHook(convex)],
+        preHandler: [authenticate, verifyDeleteReactionHook(convex)],
       },
       async (request, reply) => {
         const { params, blog, reaction } = request;
@@ -351,7 +351,7 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
             500: AppErrorSchema,
           },
         },
-        preHandler: [authenticate(), verifyCreateTagHook(convex)],
+        preHandler: [authenticate, verifyCreateTagHook(convex)],
       },
       async (request, reply) => {
         const { params, body, blog } = request;
@@ -379,7 +379,7 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
             500: AppErrorSchema,
           },
         },
-        preHandler: [authenticate(), verifyUpdateTagHook(convex, validation)],
+        preHandler: [authenticate, verifyUpdateTagHook(convex, validation)],
       },
       async (request, reply) => {
         const { params, body, blog, tag } = request;
@@ -407,7 +407,7 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
             500: AppErrorSchema,
           },
         },
-        preHandler: [authenticate(), verifyDeleteTagHook(convex)],
+        preHandler: [authenticate, verifyDeleteTagHook(convex)],
       },
       async (request, reply) => {
         const { params, blog, tag } = request;
@@ -435,7 +435,7 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
             500: AppErrorSchema,
           },
         },
-        preHandler: [authenticate(), verifyCreateParticipantHook(convex)],
+        preHandler: [authenticate, verifyCreateParticipantHook(convex)],
       },
       async (request, reply) => {
         const { params, body, blog, userRequest } = request;
@@ -463,7 +463,7 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
             500: AppErrorSchema,
           },
         },
-        preHandler: [authenticate(), verifyDeleteParticipantHook(convex)],
+        preHandler: [authenticate, verifyDeleteParticipantHook(convex)],
       },
       async (request, reply) => {
         const { params, blog, participant } = request;
