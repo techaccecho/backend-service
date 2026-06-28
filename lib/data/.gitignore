@@ -1,2 +1,5 @@
 
 .env.local
+/convex/*.d.ts
+/convex/*.d.ts.map
+/convex/*.js

@@ -12,6 +12,10 @@ import {
     UpdateUserCommand,
     UpdateUserParamsSchema,
     UpdateUserSchema,
+    GetArchivedUsersQuery,
+    PaginatedArchivedUserDataSchema,
+    GetArchivedUserQuery,
+    ArchivedUserDataSchema,
   } from '@lib/domain';
 import {
   verifyCreateUserHook,
@@ -88,6 +92,52 @@ export const usersRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
     },
     async (request, reply) => {
       const query = new GetUsersQuery({query: request.query});
+      const response = await mediator.send(query);
+      return reply.status(200).send(response);
+    },
+  );
+
+  fastify.get(
+    '/users/archived',
+    {
+      schema: {
+        description: 'Get archived users',
+        tags: ['Users'],
+        querystring: QuerySchema,
+        response: {
+          200: PaginatedArchivedUserDataSchema,
+          400: AppErrorSchema,
+          500: AppErrorSchema,
+        },
+      },
+      preHandler: [],
+    },
+    async (request, reply) => {
+      const query = new GetArchivedUsersQuery({query: request.query});
+      const response = await mediator.send(query);
+      return reply.status(200).send(response);
+    },
+  );
+
+  fastify.get(
+    '/users/archived/:userId',
+    {
+      schema: {
+        description: 'Get an archived user',
+        tags: ['Users'],
+        params: GetUserParamsSchema,
+        response: {
+          200: ArchivedUserDataSchema,
+          400: AppErrorSchema,
+          404: AppErrorSchema,
+          500: AppErrorSchema,
+        },
+      },
+      preHandler: [],
+    },
+    async (request, reply) => {
+      const { params } = request;
+      const query = new GetArchivedUserQuery({params});
       const response = await mediator.send(query);
       return reply.status(200).send(response);
     },
