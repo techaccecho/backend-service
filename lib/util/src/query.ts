@@ -16,6 +16,11 @@ export const QuerySchema = Type.Object({
       description: 'The cursor/token for the next set of results',
     }),
   ),
+  sort: Type.Optional(
+    Type.Union([Type.Literal('asc'), Type.Literal('desc')], {
+      description: 'Sort direction',
+    }),
+  ),
 });
 
 export type Query = Static<typeof QuerySchema>;

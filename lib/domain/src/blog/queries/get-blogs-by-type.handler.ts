@@ -26,6 +26,7 @@ export class GetBlogsByTypeHandler
     const result = await this.convex.query(api.blogs.listByType, {
       type: type,
       paginationOpts: toQuery(request.query),
+      ...(request.query.sort ? { sort: request.query.sort } : {}),
     });
 
     return toPaginatedData({

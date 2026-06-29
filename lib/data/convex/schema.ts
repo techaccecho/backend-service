@@ -190,7 +190,8 @@ export default defineSchema({
   blogs: defineTable(BlogEntitySchema)
     .index('by_public_id', ['id'])
     .index('by_type', ['type'])
-    .index('by_last_activity', ['lastActivityAt']),
+    .index('by_last_activity', ['lastActivityAt'])
+    .index('by_type_last_activity', ['type', 'lastActivityAt']),
   apis: defineTable(ApiEntitySchema)
     .index('by_public_id', ['id'])
     .index('by_name', ['name']),
@@ -284,6 +285,7 @@ export type UpdateUserArgs = Infer<typeof UpdateUserSchema>;
 export const BlogTypeSchema = v.object({
   type: v.union(v.literal('post'), v.literal('thread')),
   paginationOpts: paginationOptsValidator,
+  sort: v.optional(v.union(v.literal('asc'), v.literal('desc'))),
 });
 
 export type BlogTypeArgs = Infer<typeof BlogTypeSchema>;
