@@ -4,34 +4,30 @@ import type { ConvexHttpClient } from 'convex/browser';
 import type { FastifyBaseLogger } from 'fastify';
 import { type RequestHandler, requestHandler } from 'mediatr-ts';
 import { inject, injectable } from 'tsyringe';
-import { GetBlogsByTypeQuery } from './get-blogs-by-type.query.js';
-import { PaginatedBlogData, toBlog } from '../blog.schema.js';
+import { GetArchivedUsersQuery } from './get-users.query.js';
+import { PaginatedArchivedUserData, toArchivedUser } from '../user.schema.js';
 
 @injectable()
-@requestHandler(GetBlogsByTypeQuery)
-export class GetBlogsByTypeHandler
-  implements RequestHandler<GetBlogsByTypeQuery, PaginatedBlogData>
+@requestHandler(GetArchivedUsersQuery)
+export class GetArchivedUsersHandler
+  implements RequestHandler<GetArchivedUsersQuery, PaginatedArchivedUserData>
 {
   constructor(
     @inject(Tokens.Logger) private readonly logger: FastifyBaseLogger,
     @inject(Tokens.ConvexClient) private readonly convex: ConvexHttpClient,
   ) {}
 
-  async handle(query: GetBlogsByTypeQuery): Promise<PaginatedBlogData> {
+  async handle(query: GetArchivedUsersQuery): Promise<PaginatedArchivedUserData> {
     const { request } = query;
-    const { type } = request;
+    this.logger.info('Getting archived users');
 
-    this.logger.info(`Getting ${type}s`);
-
-    const result = await this.convex.query(api.blogs.listByType, {
-      type: type,
+    const result = await this.convex.query(api.users.listArchived, {
       paginationOpts: toQuery(request.query),
-      ...(request.query.sort ? { sort: request.query.sort } : {}),
     });
 
     return toPaginatedData({
       result,
-      mapper: toBlog
+      mapper: toArchivedUser
     });
   }
 }

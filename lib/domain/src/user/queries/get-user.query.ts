@@ -1,6 +1,6 @@
 import { type Static, Type } from '@sinclair/typebox';
 import { RequestData } from 'mediatr-ts';
-import { UserData } from '../user.schema.js';
+import { UserData, ArchivedUserData } from '../user.schema.js';
 
 export const GetUserParamsSchema = Type.Object({
   userId: Type.String({
@@ -17,6 +17,16 @@ export type GetUserRequest = {
 
 export class GetUserQuery extends RequestData<UserData> {
   constructor(public readonly request: GetUserRequest) {
+    super();
+  }
+}
+
+export type GetArchivedUserRequest = {
+  params: GetUserParams;
+};
+
+export class GetArchivedUserQuery extends RequestData<ArchivedUserData> {
+  constructor(public readonly request: GetArchivedUserRequest) {
     super();
   }
 }

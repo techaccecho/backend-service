@@ -67,6 +67,32 @@ export const list = query({
   },
 });
 
+export const listArchived = query({
+  args: {
+    paginationOpts: paginationOptsValidator,
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query('users')
+      .filter((q) => q.eq(q.field('isLocked'), true))
+      .paginate(args.paginationOpts);
+  },
+});
+
+export const findArchived = query({
+  args: IdSchema,
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query('users')
+      .withIndex('by_public_id', (q) => q.eq('id', args.id))
+      .unique();
+    if (user && user.isLocked) {
+      return user;
+    }
+    return null;
+  },
+});
+
 export const update = mutation({
   args: UpdateUserSchema,
   handler: async (ctx, args) => {

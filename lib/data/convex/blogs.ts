@@ -40,7 +40,8 @@ export const listByType = query({
   handler: async (ctx, args) => {
     const postQuery = ctx.db
       .query('blogs')
-      .withIndex('by_type', (q) => q.eq('type', args.type));
+      .withIndex('by_type_last_activity', (q) => q.eq('type', args.type))
+      .order(args.sort ?? 'desc');
     return await postQuery.paginate(args.paginationOpts);
   },
 });
