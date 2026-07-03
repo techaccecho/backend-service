@@ -4,8 +4,8 @@ import type { ConvexHttpClient } from 'convex/browser';
 import type { FastifyBaseLogger } from 'fastify';
 import { type RequestHandler, requestHandler } from 'mediatr-ts';
 import { inject, injectable } from 'tsyringe';
+import { type PaginatedUserData, toUser } from '../user.schema.js';
 import { GetUsersQuery } from './get-users.query.js';
-import { PaginatedUserData, toUser } from '../user.schema.js';
 
 @injectable()
 @requestHandler(GetUsersQuery)
@@ -27,7 +27,7 @@ export class GetUsersHandler
 
     return toPaginatedData({
       result,
-      mapper: toUser
-    })
+      mapper: toUser,
+    });
   }
 }

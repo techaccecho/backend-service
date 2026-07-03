@@ -10,10 +10,12 @@
     "includes": [
       "**",
       "!**/dist",
+      "!**/api",
       "!**/node_modules",
       "!**/coverage",
       "!**/pnpm-lock.yaml",
-      "!**/convex/_generated"
+      "!**/convex/_generated",
+      "!**/.turbo"
     ]
   },
   "formatter": {

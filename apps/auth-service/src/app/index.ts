@@ -6,7 +6,7 @@ export async function buildApp() {
     docs: {
       title: 'Auth Service',
       description: 'Documentation of the Auth Service',
-      version: '1.0.0'
+      version: '1.0.0',
     },
   });
 

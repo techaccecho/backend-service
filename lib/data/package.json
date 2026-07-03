@@ -13,13 +13,11 @@
     }
   },
   "scripts": {
-    "dev": "convex dev",
-    "build": "rm -rf dist && tsc -b",
-    "clean": "rm -rf dist node_modules",
-    "start": "node --env-file=.env dist/index.js",
-    "typecheck": "pnpm -r typecheck",
-    "lint": "biome check .",
-    "lint:fix": "biome check --write .",
+    "dev": "tsc -b --watch",
+    "dev:convex": "convex dev",
+    "build": "tsc -b",
+    "clean": "rimraf dist --glob \"convex/*.{js,d.ts,d.ts.map}\"",
+    "clean:build": "rimraf dist --glob \"convex/*.{js,d.ts,d.ts.map}\" && tsc -b",
     "test": "vitest run",
     "test:watch": "vitest"
   },
@@ -43,7 +41,6 @@
     "tsyringe": "^4.10.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.13",
     "@commitlint/cli": "^20.5.2",
     "@commitlint/config-conventional": "^20.5.0",
     "@semantic-release/changelog": "^6.0.3",

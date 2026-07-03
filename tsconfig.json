@@ -4,13 +4,12 @@
   },
   "files": [],
   "references": [
-     { "path": "./lib/data" },
+    { "path": "./lib/data" },
     { "path": "./lib/util" },
     { "path": "./lib/domain" },
     { "path": "./lib/starter" },
     { "path": "./apps/admin-service" },
     { "path": "./apps/auth-service" },
-    { "path": "./apps/blog-service" },
     { "path": "./apps/game-service" }
   ]
 }

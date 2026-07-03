@@ -2,7 +2,7 @@ import type { CreateUserArgs } from '@lib/data';
 import { now, uuid } from '@lib/util';
 import { type Static, Type } from '@sinclair/typebox';
 import { RequestData } from 'mediatr-ts';
-import { UserData } from '../user.schema.js';
+import type { UserData } from '../user.schema.js';
 
 export const CreateUserSchema = Type.Object({
   authId: Type.String({
@@ -46,8 +46,8 @@ export const CreateUserSchema = Type.Object({
           description: 'Base64 encoded actual content of the attachment',
         }),
       ),
-    })
-  )
+    }),
+  ),
 });
 
 export type CreateUser = Static<typeof CreateUserSchema>;
@@ -71,14 +71,16 @@ export const toCreateUserArgs = (
       updatedAt: null,
     })) ?? [];
 
-  const createAvatar = avatar && {
-    id: uuid(),
-    type: avatar.type,
-    url: avatar.url ?? null,
-    content: avatar.content ?? null,
-    createdAt: now(),
-    updatedAt: null,
-  } || null;
+  const createAvatar =
+    (avatar && {
+      id: uuid(),
+      type: avatar.type,
+      url: avatar.url ?? null,
+      content: avatar.content ?? null,
+      createdAt: now(),
+      updatedAt: null,
+    }) ||
+    null;
 
   return {
     id: uuid(),

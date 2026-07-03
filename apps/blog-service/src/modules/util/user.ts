@@ -1,38 +1,46 @@
-import type { FastifyRequest } from 'fastify';
-import { assertHasStringKey, ForbiddenError, ValidationError, assertRequired } from '@lib/util';
 import { api } from '@lib/data';
+import {
+  assertHasStringKey,
+  assertRequired,
+  ForbiddenError,
+  ValidationError,
+} from '@lib/util';
 import type { ConvexHttpClient } from 'convex/browser';
+import type { FastifyRequest } from 'fastify';
 
-export const verifyUserId = async (convex: ConvexHttpClient, request: FastifyRequest) => {
-    const { auth } = request;
-       
-    assertRequired('auth', auth);
+export const verifyUserId = async (
+  convex: ConvexHttpClient,
+  request: FastifyRequest,
+) => {
+  const { auth } = request;
 
-    const { body } = request;
-    assertHasStringKey(body, 'userId');
-    
-    const { userId } = body;
+  assertRequired('auth', auth);
 
-    const userResponse = await convex.query(api.users.find, { id: userId });
+  const { body } = request;
+  assertHasStringKey(body, 'userId');
 
-    if (userResponse == null) {
-        throw new ValidationError({
-            details: [
-                {
-                    path: '/userId',
-                    message: `userId '${userId}' is invalid`
-                }
-            ]
-        })
-    }
+  const { userId } = body;
 
-    if(auth.type === 'api' || auth.user.role === 'admin') {
-        return;
-    }
+  const userResponse = await convex.query(api.users.find, { id: userId });
 
-    if (userResponse.id !== auth.user.id) {
-        throw new ForbiddenError();
-    }
+  if (userResponse == null) {
+    throw new ValidationError({
+      details: [
+        {
+          path: '/userId',
+          message: `userId '${userId}' is invalid`,
+        },
+      ],
+    });
+  }
 
-    request.userRequest = userResponse;
-}
+  if (auth.type === 'api' || auth.user.role === 'admin') {
+    return;
+  }
+
+  if (userResponse.id !== auth.user.id) {
+    throw new ForbiddenError();
+  }
+
+  request.userRequest = userResponse;
+};

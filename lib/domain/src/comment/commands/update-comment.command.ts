@@ -7,7 +7,7 @@ import type {
 import { now, uuid } from '@lib/util';
 import { type Static, Type } from '@sinclair/typebox';
 import { RequestData } from 'mediatr-ts';
-import { BlogData } from '../../blog/index.js';
+import type { BlogData } from '../../blog/index.js';
 
 export const UpdateCommentParamsSchema = Type.Object({
   blogId: Type.String({
@@ -116,7 +116,9 @@ export const toUpdateCommentArgs = (
     updatedAt: now(),
   };
 
-  const restComments = blog.comments.filter((comment) => comment.id !== commentId);
+  const restComments = blog.comments.filter(
+    (comment) => comment.id !== commentId,
+  );
 
   return {
     id: blog._id,

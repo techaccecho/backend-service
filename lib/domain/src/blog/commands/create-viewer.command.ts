@@ -1,7 +1,7 @@
 import type { Doc, UpdateBlogArgs } from '@lib/data';
 import { type Static, Type } from '@sinclair/typebox';
 import { RequestData } from 'mediatr-ts';
-import { BlogData } from '../blog.schema.js';
+import type { BlogData } from '../blog.schema.js';
 
 export const CreateViewerParamsSchema = Type.Object({
   blogId: Type.String({
@@ -46,8 +46,8 @@ export const toCreateViewerArgs = (
       viewers: updateViewers,
       engagement: {
         ...existing.engagement,
-        views: updateViewers.length
-      }
+        views: updateViewers.length,
+      },
     },
   };
 };

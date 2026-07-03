@@ -1,11 +1,11 @@
 import { api } from '@lib/data';
-import { NotFoundError, toData, Tokens } from '@lib/util';
+import { NotFoundError, Tokens, toData } from '@lib/util';
 import type { ConvexHttpClient } from 'convex/browser';
 import type { FastifyBaseLogger } from 'fastify';
 import { type RequestHandler, requestHandler } from 'mediatr-ts';
 import { inject, injectable } from 'tsyringe';
+import { toUser, type UserData } from '../user.schema.js';
 import { GetUserByAuthIdQuery } from './get-user-by-auth-id.query.js';
-import { toUser, UserData } from '../user.schema.js';
 
 @injectable()
 @requestHandler(GetUserByAuthIdQuery)
@@ -32,6 +32,6 @@ export class GetUserByAuthIdHandler
       throw new NotFoundError({ resource: `user with authId ${authId}` });
     }
 
-    return toData({ data: toUser(response)});
+    return toData({ data: toUser(response) });
   }
 }

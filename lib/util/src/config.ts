@@ -22,7 +22,7 @@ export const ConfigSchema = Type.Object({
   API_KEY: Type.String(),
   AUTH_DOMAIN: Type.String(),
   AUTH_CLIENT_ID: Type.String(),
-  AUTH_CLIENT_SECRET: Type.String()
+  AUTH_CLIENT_SECRET: Type.String(),
 });
 
 export type Config = Static<typeof ConfigSchema>;

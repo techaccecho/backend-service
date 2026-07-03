@@ -1,6 +1,4 @@
-import {
-  type Config,
-} from '@lib/util';
+import type { Config } from '@lib/util';
 
 export type Auth0User = {
   nickname: string | null;
@@ -13,7 +11,6 @@ export const fetchAuth0User = async (
   userId: string,
   config: Config,
 ): Promise<Auth0User> => {
-
   const tokenRes = await fetch(`${config.AUTH_DOMAIN}/oauth/token`, {
     method: 'POST',
     headers: {

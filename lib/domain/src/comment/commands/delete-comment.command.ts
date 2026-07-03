@@ -1,7 +1,7 @@
 import type { CommentEntity, Doc, UpdateBlogArgs } from '@lib/data';
 import { type Static, Type } from '@sinclair/typebox';
 import { RequestData } from 'mediatr-ts';
-import { BlogData } from '../../blog/index.js';
+import type { BlogData } from '../../blog/index.js';
 
 export const DeleteCommentParamsSchema = Type.Object({
   blogId: Type.String({
@@ -14,7 +14,9 @@ export const DeleteCommentParamsSchema = Type.Object({
   }),
 });
 
-export type DeleteCommentParamsSchema = Static<typeof DeleteCommentParamsSchema>;
+export type DeleteCommentParamsSchema = Static<
+  typeof DeleteCommentParamsSchema
+>;
 
 export type DeleteCommentRequest = {
   params: DeleteCommentParamsSchema;
@@ -36,8 +38,8 @@ export const toDeleteCommentArgs = (
       comments: restComments,
       engagement: {
         ...blog.engagement,
-        comments: restComments.length
-      }
+        comments: restComments.length,
+      },
     },
   };
 };

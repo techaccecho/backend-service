@@ -7,8 +7,8 @@ import {
   UnauthorizedError,
   type UserRole,
 } from '@lib/util';
-import type { FastifyReply, FastifyRequest } from 'fastify';
 import type { ConvexHttpClient } from 'convex/browser';
+import type { FastifyReply, FastifyRequest } from 'fastify';
 import { fetchAuth0User } from '../util/index.js';
 
 export const verifyApiKey = (config: Config) => {
@@ -25,7 +25,6 @@ export const verifyApiKey = (config: Config) => {
 
 export const verifyJwt = (config: Config, convex: ConvexHttpClient) => {
   return async (request: FastifyRequest, _reply: FastifyReply) => {
-
     try {
       if (request.headers.authorization == null) {
         throw new UnauthorizedError();
@@ -36,7 +35,9 @@ export const verifyJwt = (config: Config, convex: ConvexHttpClient) => {
       const { user } = request;
       const authId = user.sub;
 
-      const userResponse = await convex.query(api.users.findByAuthId, { authId });
+      const userResponse = await convex.query(api.users.findByAuthId, {
+        authId,
+      });
 
       if (userResponse != null) {
         request.auth = {
@@ -47,17 +48,23 @@ export const verifyJwt = (config: Config, convex: ConvexHttpClient) => {
         request.userRequest = userResponse;
 
         return;
-      };
+      }
 
-      const { nickname, name, picture, email, } = await fetchAuth0User(authId, config);
+      const { nickname, name, picture, email } = await fetchAuth0User(
+        authId,
+        config,
+      );
 
       const create = {
         authId,
         email,
         alias: (nickname || name) ?? undefined,
-        avatar: picture != null ? { url: picture, type: 'media/image' as const } : undefined,
+        avatar:
+          picture != null
+            ? { url: picture, type: 'media/image' as const }
+            : undefined,
       };
-      
+
       const args = toCreateUserArgs({ create });
 
       await convex.mutation(api.users.create, args);
@@ -70,11 +77,11 @@ export const verifyJwt = (config: Config, convex: ConvexHttpClient) => {
 
       request.auth = {
         type: 'user',
-        user: created
+        user: created,
       };
       request.userRequest = created;
     } catch (_err) {
-       console.log(_err);
+      console.log(_err);
       throw new UnauthorizedError();
     }
   };

@@ -1,3 +1,4 @@
+export * from './assert.js';
 export * from './auth.js';
 export * from './config.js';
 export * from './data-schema.js';
@@ -9,4 +10,3 @@ export * from './query.js';
 export * from './token.js';
 export * from './user.js';
 export * from './validation.js';
-export * from './assert.js';

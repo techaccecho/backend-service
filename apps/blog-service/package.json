@@ -7,14 +7,13 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
+    "predev": "tsc -b",
     "dev": "tsx watch --env-file=.env src/index.ts",
-    "build": "tsc -b",
-    "build:api": "pnpm --filter=@lib/* build && tsup",
-    "clean": "rm -rf dist node_modules",
+    "prebuild": "tsc -b",
+    "build": "tsup",
+    "clean": "rimraf dist api",
+    "clean:build": "rimraf dist api && tsc -b && tsup",
     "start": "node --env-file=.env dist/index.js",
-    "typecheck": "pnpm -r typecheck",
-    "lint": "biome check .",
-    "lint:fix": "biome check --write .",
     "test": "vitest run",
     "test:watch": "vitest"
   },
@@ -40,19 +39,5 @@
     "mediatr-ts": "^2.2.0",
     "reflect-metadata": "^0.2.2",
     "tsyringe": "^4.10.0"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "2.4.13",
-    "@commitlint/cli": "^20.5.2",
-    "@commitlint/config-conventional": "^20.5.0",
-    "@semantic-release/changelog": "^6.0.3",
-    "@semantic-release/git": "^10.0.1",
-    "@types/node": "latest",
-    "@vercel/node": "^5.8.12",
-    "@vitest/coverage-v8": "^4.1.5",
-    "husky": "^9.1.7",
-    "tsup": "^8.5.1",
-    "tsx": "^4.21.0",
-    "vitest": "^4.1.5"
   }
 }

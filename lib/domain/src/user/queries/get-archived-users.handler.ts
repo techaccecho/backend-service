@@ -4,8 +4,11 @@ import type { ConvexHttpClient } from 'convex/browser';
 import type { FastifyBaseLogger } from 'fastify';
 import { type RequestHandler, requestHandler } from 'mediatr-ts';
 import { inject, injectable } from 'tsyringe';
+import {
+  type PaginatedArchivedUserData,
+  toArchivedUser,
+} from '../user.schema.js';
 import { GetArchivedUsersQuery } from './get-users.query.js';
-import { PaginatedArchivedUserData, toArchivedUser } from '../user.schema.js';
 
 @injectable()
 @requestHandler(GetArchivedUsersQuery)
@@ -17,7 +20,9 @@ export class GetArchivedUsersHandler
     @inject(Tokens.ConvexClient) private readonly convex: ConvexHttpClient,
   ) {}
 
-  async handle(query: GetArchivedUsersQuery): Promise<PaginatedArchivedUserData> {
+  async handle(
+    query: GetArchivedUsersQuery,
+  ): Promise<PaginatedArchivedUserData> {
     const { request } = query;
     this.logger.info('Getting archived users');
 
@@ -27,7 +32,7 @@ export class GetArchivedUsersHandler
 
     return toPaginatedData({
       result,
-      mapper: toArchivedUser
+      mapper: toArchivedUser,
     });
   }
 }

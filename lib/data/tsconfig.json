@@ -7,6 +7,6 @@
     "rootDir": "src",
     "tsBuildInfoFile": "dist/.tsbuildinfo"
   },
-  "include": ["src"],
+  "include": ["src", "convex"],
   "exclude": ["node_modules", "dist"]
 }

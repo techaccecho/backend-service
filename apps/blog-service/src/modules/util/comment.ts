@@ -1,76 +1,96 @@
-import type { FastifyRequest } from 'fastify';
-import { ValidationError, assertRequired, assertHasStringKey, NotFoundError, ForbiddenError, AsyncValidation } from '@lib/util';
+import type { UpdateComment } from '@lib/domain';
+import {
+  type AsyncValidation,
+  assertHasStringKey,
+  assertRequired,
+  ForbiddenError,
+  NotFoundError,
+  ValidationError,
+} from '@lib/util';
 import type { ConvexHttpClient } from 'convex/browser';
+import type { FastifyRequest } from 'fastify';
 import { verifyMutateBlog } from './blog.js';
-import { UpdateComment } from '@lib/domain';
 
-export const verifyMutateComment = async (convex: ConvexHttpClient, request: FastifyRequest, verifyAuthor: boolean = true) => {
-    await verifyMutateBlog(convex, request);
-    
-    const { auth, params, blog } = request;
+export const verifyMutateComment = async (
+  convex: ConvexHttpClient,
+  request: FastifyRequest,
+  verifyAuthor: boolean = true,
+) => {
+  await verifyMutateBlog(convex, request);
 
-    assertRequired('auth', auth);
-    assertHasStringKey(params, 'commentId');
-    assertRequired('blog', blog);
+  const { auth, params, blog } = request;
 
-    const { commentId } = params;
+  assertRequired('auth', auth);
+  assertHasStringKey(params, 'commentId');
+  assertRequired('blog', blog);
 
-    const comment = blog.comments.find(comment => comment.id == commentId);
+  const { commentId } = params;
 
-    if (comment == null) {
-        throw new NotFoundError({ resource: `comment with id ${commentId}` });
-    }
+  const comment = blog.comments.find((comment) => comment.id === commentId);
 
-    if(auth.type === 'api' || auth.user.role === 'admin') {
-        return;
-    }
+  if (comment == null) {
+    throw new NotFoundError({ resource: `comment with id ${commentId}` });
+  }
 
-    if (verifyAuthor && comment.author.id !== auth.user.id) {
-        throw new ForbiddenError();
-    }
+  if (auth.type === 'api' || auth.user.role === 'admin') {
+    return;
+  }
 
-    request.comment = comment;
-}
+  if (verifyAuthor && comment.author.id !== auth.user.id) {
+    throw new ForbiddenError();
+  }
 
-export const verifyMutateCommentReaction = async (convex: ConvexHttpClient, request: FastifyRequest) => {
-    await verifyMutateBlog(convex, request);
+  request.comment = comment;
+};
 
-    const { auth, params, comment } = request;
+export const verifyMutateCommentReaction = async (
+  convex: ConvexHttpClient,
+  request: FastifyRequest,
+) => {
+  await verifyMutateBlog(convex, request);
 
-    assertRequired('auth', auth);
-    assertHasStringKey(params, 'reactionId');
-    assertRequired('comment', comment);
+  const { auth, params, comment } = request;
 
-    const { reactionId } = params;
+  assertRequired('auth', auth);
+  assertHasStringKey(params, 'reactionId');
+  assertRequired('comment', comment);
 
-    const reactionResponse = comment.reactions.find(reaction => reaction.id == reactionId);
+  const { reactionId } = params;
 
-    if (reactionResponse == null) {
-        throw new NotFoundError({ resource: `reaction with id ${reactionId}` });
-    }
+  const reactionResponse = comment.reactions.find(
+    (reaction) => reaction.id === reactionId,
+  );
 
-    if(auth.type === 'api' || auth.user.role === 'admin') {
-        return;
-    }
+  if (reactionResponse == null) {
+    throw new NotFoundError({ resource: `reaction with id ${reactionId}` });
+  }
 
-    if (reactionResponse.user.id !== auth.user.id) {
-        throw new ForbiddenError();
-    }
+  if (auth.type === 'api' || auth.user.role === 'admin') {
+    return;
+  }
 
-    request.reaction = reactionResponse;
-}
+  if (reactionResponse.user.id !== auth.user.id) {
+    throw new ForbiddenError();
+  }
 
-export const verifyUpdateComment = async (convex: ConvexHttpClient, validation: AsyncValidation, request: FastifyRequest) => {
-    await verifyMutateComment(convex, request);
+  request.reaction = reactionResponse;
+};
 
-    const update = request.body as UpdateComment;
-    
-    const validationDetails = await validation
-        .validator()
-        .notEmpty({ value: update })
-        .validate();
+export const verifyUpdateComment = async (
+  convex: ConvexHttpClient,
+  validation: AsyncValidation,
+  request: FastifyRequest,
+) => {
+  await verifyMutateComment(convex, request);
 
-    if (validationDetails.length > 0) {
-        throw new ValidationError({ details: validationDetails });
-    }
-}
+  const update = request.body as UpdateComment;
+
+  const validationDetails = await validation
+    .validator()
+    .notEmpty({ value: update })
+    .validate();
+
+  if (validationDetails.length > 0) {
+    throw new ValidationError({ details: validationDetails });
+  }
+};

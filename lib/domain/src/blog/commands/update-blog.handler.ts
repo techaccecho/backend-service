@@ -2,16 +2,16 @@ import { api } from '@lib/data';
 import {
   AsyncValidation,
   NotFoundError,
-  toData,
   Tokens,
+  toData,
   ValidationError,
 } from '@lib/util';
 import type { ConvexHttpClient } from 'convex/browser';
 import type { FastifyBaseLogger } from 'fastify';
 import { type RequestHandler, requestHandler } from 'mediatr-ts';
 import { inject, injectable } from 'tsyringe';
+import { type BlogData, toBlog } from '../blog.schema.js';
 import { toUpdateBlogArgs, UpdateBlogCommand } from './update-blog.command.js';
-import { BlogData, toBlog } from '../blog.schema.js';
 
 @injectable()
 @requestHandler(UpdateBlogCommand)
@@ -50,6 +50,6 @@ export class UpdateBlogHandler
       throw new NotFoundError({ resource: `blog with id ${blogId}` });
     }
 
-    return toData({ data: toBlog(updated)});
+    return toData({ data: toBlog(updated) });
   }
 }

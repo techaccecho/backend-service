@@ -1,13 +1,16 @@
-import type { FastifyReply, FastifyRequest } from 'fastify';
+import type { CreateTag } from '@lib/domain';
 import type { ConvexHttpClient } from 'convex/browser';
-import { CreateTag } from '@lib/domain';
-import { verifyUserId, verifyMutateBlog } from '../../util/index.js';
+import type { FastifyReply, FastifyRequest } from 'fastify';
+import { verifyMutateBlog, verifyUserId } from '../../util/index.js';
 
 export const verifyCreateTagHook = (convex: ConvexHttpClient) => {
-    return async (request: FastifyRequest<{
-        Body: CreateTag
-    }>, _: FastifyReply) => {
-        await verifyUserId(convex, request);
-        await verifyMutateBlog(convex, request);
-    }
-}
+  return async (
+    request: FastifyRequest<{
+      Body: CreateTag;
+    }>,
+    _: FastifyReply,
+  ) => {
+    await verifyUserId(convex, request);
+    await verifyMutateBlog(convex, request);
+  };
+};

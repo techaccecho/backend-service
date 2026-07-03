@@ -2,7 +2,7 @@ import type { CommentEntity, Doc, UpdateBlogArgs } from '@lib/data';
 import { now, uuid } from '@lib/util';
 import { type Static, Type } from '@sinclair/typebox';
 import { RequestData } from 'mediatr-ts';
-import { BlogData } from '../../blog/index.js';
+import type { BlogData } from '../../blog/index.js';
 
 export const CreateCommentReplyParamsSchema = Type.Object({
   blogId: Type.String({
@@ -37,10 +37,10 @@ export const CreateCommentReplySchema = Type.Object({
     description: 'The actual content',
   }),
   attachments: Type.Optional(
-      Type.Array(CreateCommentReplyAttachmentSchema, {
-        description: 'The attachments referenced',
-      }),
-    ),
+    Type.Array(CreateCommentReplyAttachmentSchema, {
+      description: 'The attachments referenced',
+    }),
+  ),
 });
 
 export type CreateCommentReply = Static<typeof CreateCommentReplySchema>;
@@ -81,7 +81,7 @@ export const toCreateCommentReplyArgs = (
     comments: 0,
     attachments: createAttachments.length,
     reactions: 0,
-    updatedAt: null
+    updatedAt: null,
   };
 
   const createReply = {
@@ -103,8 +103,8 @@ export const toCreateCommentReplyArgs = (
     replies: updateReplies,
     engagement: {
       ...comment.engagement,
-      comments: updateReplies.length
-    }
+      comments: updateReplies.length,
+    },
   };
 
   const restComments = blog.comments.filter(

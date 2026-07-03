@@ -1,5 +1,9 @@
 import fp from 'fastify-plugin';
-import { blogsRoutes, commentsRoutes, repliesRoutes } from '../modules/index.js';
+import {
+  blogsRoutes,
+  commentsRoutes,
+  repliesRoutes,
+} from '../modules/index.js';
 
 export const routesPlugin = fp(async (fastify) => {
   const prefix = '/blog-api';

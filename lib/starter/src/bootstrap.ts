@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import 'reflect-metadata';
+import cors from '@fastify/cors';
 import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
 import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
@@ -12,14 +13,13 @@ import Fastify, {
   type RawRequestDefaultExpression,
   type RawServerDefault,
 } from 'fastify';
-import cors from '@fastify/cors';
 import {
   authPlugin,
   configPlugin,
   convexPlugin,
   errorHandlerPlugin,
   mediatorPlugin,
-  routesPlugin
+  routesPlugin,
 } from './plugins/index.js';
 
 export type FastifyApp = FastifyInstance<
@@ -39,15 +39,38 @@ export type BootstrapConfig = {
   };
 };
 
-export const bootstrap = async (
-  config: BootstrapConfig,
-) => {
+export const bootstrap = async (config: BootstrapConfig) => {
   const { routePrefix, docs } = config;
 
   const app = Fastify({
     logger: {
-      level: process.env.LOG_LEVEL || 'info',
-      redact: ['req.headers.authorization', 'body.password', 'body.email'],
+      level: process.env.LOG_LEVEL ?? 'info',
+
+      transport:
+        process.env.NODE_ENV !== 'prod'
+          ? {
+              target: 'pino-pretty',
+              options: {
+                colorize: true,
+                translateTime: 'SYS:standard',
+                ignore: 'pid,hostname',
+              },
+            }
+          : undefined,
+      redact: {
+        paths: [
+          'req.headers.authorization',
+          'req.headers.cookie',
+          'body.password',
+          'body.token',
+          'body.accessToken',
+          'body.refreshToken',
+          'body.token',
+          'body.secret',
+          'body.apiKeys',
+        ],
+        censor: '[REDACTED]',
+      },
       serializers: {
         req: (req) => ({ method: req.method, url: req.url, ip: req.ip }),
       },
@@ -78,6 +101,21 @@ export const bootstrap = async (
         description: docs.description,
         version: docs.version,
       },
+      components: {
+        securitySchemes: {
+          bearerAuth: {
+            type: 'http',
+            scheme: 'bearer',
+            bearerFormat: 'JWT',
+            description: 'Enter your JWT access Token',
+          },
+        },
+      },
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
     },
   });
 
@@ -101,7 +139,7 @@ export const bootstrap = async (
 export const server = async (app: FastifyInstance) => {
   try {
     const port = app.config.PORT;
-    const host = app.config.NODE_ENV === 'prod' ? '0.0.0.0' : 'localhost';
+    const host = app.config.NODE_ENV !== 'prod' ? 'localhost' : '0.0.0.0';
 
     await app.listen({ port, host });
 

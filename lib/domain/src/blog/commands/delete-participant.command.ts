@@ -1,7 +1,7 @@
-import type { UserPreviewEntity, Doc, UpdateBlogArgs } from '@lib/data';
+import type { Doc, UpdateBlogArgs, UserPreviewEntity } from '@lib/data';
 import { type Static, Type } from '@sinclair/typebox';
 import { RequestData } from 'mediatr-ts';
-import { BlogData } from '../blog.schema.js';
+import type { BlogData } from '../blog.schema.js';
 
 export const DeleteParticipantParamsSchema = Type.Object({
   blogId: Type.String({
@@ -14,7 +14,9 @@ export const DeleteParticipantParamsSchema = Type.Object({
   }),
 });
 
-export type DeleteParticipantParamsSchema = Static<typeof DeleteParticipantParamsSchema>;
+export type DeleteParticipantParamsSchema = Static<
+  typeof DeleteParticipantParamsSchema
+>;
 
 export type DeleteParticipantRequest = {
   params: DeleteParticipantParamsSchema;
@@ -22,9 +24,13 @@ export type DeleteParticipantRequest = {
   blog: Doc<'blogs'>;
 };
 
-export const toDeleteParticipantArgs = (request: DeleteParticipantRequest): UpdateBlogArgs => {
+export const toDeleteParticipantArgs = (
+  request: DeleteParticipantRequest,
+): UpdateBlogArgs => {
   const { existing, blog } = request;
-  const restParticipants = blog.participants.filter((participant) => participant.id !== existing.id);
+  const restParticipants = blog.participants.filter(
+    (participant) => participant.id !== existing.id,
+  );
 
   return {
     id: blog._id,

@@ -1,72 +1,95 @@
-import type { FastifyRequest } from 'fastify';
-import { assertRequired, ValidationError, assertHasStringKey, NotFoundError, AsyncValidation } from '@lib/util';
 import { api } from '@lib/data';
+import type { UpdateApi } from '@lib/domain';
+import {
+  type AsyncValidation,
+  assertHasStringKey,
+  assertRequired,
+  NotFoundError,
+  ValidationError,
+} from '@lib/util';
 import type { ConvexHttpClient } from 'convex/browser';
-import { UpdateApi } from '@lib/domain';
+import type { FastifyRequest } from 'fastify';
 
-export const verifyMutateApi = async (convex: ConvexHttpClient, request: FastifyRequest) => {
-    assertHasStringKey(request.params, 'apiId');
+export const verifyMutateApi = async (
+  convex: ConvexHttpClient,
+  request: FastifyRequest,
+) => {
+  assertHasStringKey(request.params, 'apiId');
 
-    const { apiId } = request.params;
+  const { apiId } = request.params;
 
-    const response = await convex.query(api.apis.find, { id: apiId });
+  const response = await convex.query(api.apis.find, { id: apiId });
 
-    if (response == null) {
-        throw new NotFoundError({ resource: `api with id ${apiId}` });
-    }
+  if (response == null) {
+    throw new NotFoundError({ resource: `api with id ${apiId}` });
+  }
 
-    request.api = response;
-}
+  request.api = response;
+};
 
-export const verifyMutateFeature = async (convex: ConvexHttpClient, request: FastifyRequest) => {
-    await verifyMutateApi(convex, request);
+export const verifyMutateFeature = async (
+  convex: ConvexHttpClient,
+  request: FastifyRequest,
+) => {
+  await verifyMutateApi(convex, request);
 
-    const { params, api } = request;
-    
-    assertHasStringKey(params, 'featureId');
-    assertRequired('api', api);
+  const { params, api } = request;
 
-    const { featureId } = params;
+  assertHasStringKey(params, 'featureId');
+  assertRequired('api', api);
 
-    const featureResponse = api.features.find(feature => feature.id == featureId);
+  const { featureId } = params;
 
-    if (featureResponse == null) {
-        throw new NotFoundError({ resource: `feature with id ${featureId}` });
-    }
+  const featureResponse = api.features.find(
+    (feature) => feature.id === featureId,
+  );
 
-    request.feature = featureResponse;
-}
+  if (featureResponse == null) {
+    throw new NotFoundError({ resource: `feature with id ${featureId}` });
+  }
 
-export const verifyMutateSubscriber = async (convex: ConvexHttpClient, request: FastifyRequest) => {
-    await verifyMutateApi(convex, request);
+  request.feature = featureResponse;
+};
 
-    const { params, api } = request;
+export const verifyMutateSubscriber = async (
+  convex: ConvexHttpClient,
+  request: FastifyRequest,
+) => {
+  await verifyMutateApi(convex, request);
 
-    assertHasStringKey(params, 'subscriberId');
-    assertRequired('api', api);
+  const { params, api } = request;
 
-    const { subscriberId } = params;
+  assertHasStringKey(params, 'subscriberId');
+  assertRequired('api', api);
 
-    const subscriberResponse = api.subscribers.find(subscriber => subscriber.id == subscriberId);
+  const { subscriberId } = params;
 
-    if (subscriberResponse == null) {
-        throw new NotFoundError({ resource: `subscriber with id ${subscriberId}` });
-    }
+  const subscriberResponse = api.subscribers.find(
+    (subscriber) => subscriber.id === subscriberId,
+  );
 
-    request.subscriber = subscriberResponse;
-}
+  if (subscriberResponse == null) {
+    throw new NotFoundError({ resource: `subscriber with id ${subscriberId}` });
+  }
 
-export const verifyUpdateApi = async (convex: ConvexHttpClient, validation: AsyncValidation, request: FastifyRequest<{Body: UpdateApi }>) => {
-    await verifyMutateApi(convex, request);
+  request.subscriber = subscriberResponse;
+};
 
-    const update = request.body;
-    
-    const validationDetails = await validation
-        .validator()
-        .notEmpty({ value: update })
-        .validate();
+export const verifyUpdateApi = async (
+  convex: ConvexHttpClient,
+  validation: AsyncValidation,
+  request: FastifyRequest<{ Body: UpdateApi }>,
+) => {
+  await verifyMutateApi(convex, request);
 
-    if (validationDetails.length > 0) {
-        throw new ValidationError({ details: validationDetails });
-    }
-}
+  const update = request.body;
+
+  const validationDetails = await validation
+    .validator()
+    .notEmpty({ value: update })
+    .validate();
+
+  if (validationDetails.length > 0) {
+    throw new ValidationError({ details: validationDetails });
+  }
+};

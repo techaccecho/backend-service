@@ -1,7 +1,7 @@
 import type { Doc, UpdateBlogArgs } from '@lib/data';
 import { type Static, Type } from '@sinclair/typebox';
 import { RequestData } from 'mediatr-ts';
-import { BlogData } from '../blog.schema.js';
+import type { BlogData } from '../blog.schema.js';
 
 export const CreateParticipantParamsSchema = Type.Object({
   blogId: Type.String({
@@ -10,10 +10,12 @@ export const CreateParticipantParamsSchema = Type.Object({
   }),
 });
 
-export type CreateParticipantParams = Static<typeof CreateParticipantParamsSchema>;
+export type CreateParticipantParams = Static<
+  typeof CreateParticipantParamsSchema
+>;
 
 export const CreateParticipantSchema = Type.Object({
-  userId: Type.String({ description: 'User id' })
+  userId: Type.String({ description: 'User id' }),
 });
 
 export type CreateParticipant = Static<typeof CreateParticipantSchema>;
@@ -25,7 +27,9 @@ export type CreateParticipantRequest = {
   existing: Doc<'blogs'>;
 };
 
-export const toCreateParticipantArgs = (request: CreateParticipantRequest): UpdateBlogArgs => {
+export const toCreateParticipantArgs = (
+  request: CreateParticipantRequest,
+): UpdateBlogArgs => {
   const { user, existing } = request;
 
   const createParticipant = {
@@ -33,7 +37,7 @@ export const toCreateParticipantArgs = (request: CreateParticipantRequest): Upda
     email: user.email,
     alias: user.alias,
     firstName: user.firstName,
-    lastName: user.lastName
+    lastName: user.lastName,
   };
 
   return {

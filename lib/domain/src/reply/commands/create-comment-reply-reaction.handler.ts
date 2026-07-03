@@ -1,14 +1,14 @@
 import { api } from '@lib/data';
-import { NotFoundError, toData, Tokens } from '@lib/util';
+import { NotFoundError, Tokens, toData } from '@lib/util';
 import type { ConvexHttpClient } from 'convex/browser';
 import type { FastifyBaseLogger } from 'fastify';
 import { type RequestHandler, requestHandler } from 'mediatr-ts';
 import { inject, injectable } from 'tsyringe';
+import { type BlogData, toBlog } from '../../blog/index.js';
 import {
   CreateCommentReplyReactionCommand,
   toCreateCommentReplyReactionArgs,
 } from './create-comment-reply-reaction.command.js';
-import { BlogData, toBlog } from '../../blog/index.js';
 
 @injectable()
 @requestHandler(CreateCommentReplyReactionCommand)
@@ -35,6 +35,6 @@ export class CreateCommentReplyReactionHandler
       throw new NotFoundError({ resource: `blog with id ${blogId}` });
     }
 
-    return toData({ data: toBlog(updated)});
+    return toData({ data: toBlog(updated) });
   }
 }

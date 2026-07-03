@@ -1,12 +1,15 @@
-import type { FastifyReply, FastifyRequest } from 'fastify';
+import type { CreateBlog } from '@lib/domain';
 import type { ConvexHttpClient } from 'convex/browser';
-import { CreateBlog } from '@lib/domain';
+import type { FastifyReply, FastifyRequest } from 'fastify';
 import { verifyAuthorId } from '../../util/index.js';
 
 export const verifyCreateBlogHook = (convex: ConvexHttpClient) => {
-    return async (request: FastifyRequest<{
-        Body: CreateBlog
-    }>, _: FastifyReply) => {
-        await verifyAuthorId(convex, request);
-    }
-}
+  return async (
+    request: FastifyRequest<{
+      Body: CreateBlog;
+    }>,
+    _: FastifyReply,
+  ) => {
+    await verifyAuthorId(convex, request);
+  };
+};

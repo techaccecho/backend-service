@@ -1,10 +1,10 @@
 import type { Query } from '@lib/util';
 import { RequestData } from 'mediatr-ts';
-import { PaginatedBlogData } from '../blog.schema.js';
+import type { PaginatedBlogData } from '../blog.schema.js';
 
 export type GetBlogsByTypeRequest = {
-    type: 'post' | 'thread'
-    query: Query;
+  type: 'post' | 'thread';
+  query: Query;
 };
 
 export class GetBlogsByTypeQuery extends RequestData<PaginatedBlogData> {

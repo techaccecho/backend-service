@@ -2,7 +2,7 @@ import type { AttachmentEntity, Doc, UpdateBlogArgs } from '@lib/data';
 import { now, uuid } from '@lib/util';
 import { type Static, Type } from '@sinclair/typebox';
 import { RequestData } from 'mediatr-ts';
-import { BlogData } from '../blog.schema.js';
+import type { BlogData } from '../blog.schema.js';
 
 export const UpdateBlogParamsSchema = Type.Object({
   blogId: Type.String({

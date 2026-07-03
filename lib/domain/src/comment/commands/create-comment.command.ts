@@ -2,7 +2,7 @@ import type { Doc, UpdateBlogArgs } from '@lib/data';
 import { now, uuid } from '@lib/util';
 import { type Static, Type } from '@sinclair/typebox';
 import { RequestData } from 'mediatr-ts';
-import { BlogData } from '../../blog/index.js';
+import type { BlogData } from '../../blog/index.js';
 
 export const CreateCommentParamsSchema = Type.Object({
   blogId: Type.String({
@@ -92,10 +92,14 @@ export const toCreateCommentArgs = (
 
   const updateComments = [...existing.comments, createComment];
 
-  const createParticipant = existing.participants.find(participant => participant.id === createComment.author.id);
+  const createParticipant = existing.participants.find(
+    (participant) => participant.id === createComment.author.id,
+  );
 
-  const updateParticipants = createParticipant != null ? existing.participants : [...existing.participants, createComment.author];
-
+  const updateParticipants =
+    createParticipant != null
+      ? existing.participants
+      : [...existing.participants, createComment.author];
 
   return {
     id: existing._id,
@@ -104,7 +108,7 @@ export const toCreateCommentArgs = (
       comments: updateComments,
       engagement: {
         ...existing.engagement,
-        comments: updateComments.length
+        comments: updateComments.length,
       },
     },
   };

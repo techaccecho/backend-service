@@ -1,7 +1,12 @@
-import type { CommentEntity, Doc, ReplyEntity, UpdateBlogArgs } from '@lib/data';
+import type {
+  CommentEntity,
+  Doc,
+  ReplyEntity,
+  UpdateBlogArgs,
+} from '@lib/data';
 import { type Static, Type } from '@sinclair/typebox';
 import { RequestData } from 'mediatr-ts';
-import { BlogData } from '../../blog/index.js';
+import type { BlogData } from '../../blog/index.js';
 
 export const CreateCommentReplyViewerParamsSchema = Type.Object({
   blogId: Type.String({
@@ -26,14 +31,16 @@ export const CreateCommentReplyViewerSchema = Type.Object({
   userId: Type.String({ description: 'The id of the reply viewer' }),
 });
 
-export type CreateCommentReplyViewer = Static<typeof CreateCommentReplyViewerSchema>;
+export type CreateCommentReplyViewer = Static<
+  typeof CreateCommentReplyViewerSchema
+>;
 
 export type CreateCommentReplyViewerRequest = {
   params: CreateCommentReplyViewerParams;
   create: CreateCommentReplyViewer;
   blog: Doc<'blogs'>;
   comment: CommentEntity;
-  reply: ReplyEntity,
+  reply: ReplyEntity;
   user: Doc<'users'>;
 };
 
@@ -57,7 +64,7 @@ export const toCreateCommentReplyViewerArgs = (
     viewers: updateViewers,
     engagement: {
       ...reply.engagement,
-      views: updateViewers.length
+      views: updateViewers.length,
     },
   };
 
@@ -67,7 +74,7 @@ export const toCreateCommentReplyViewerArgs = (
 
   const updateComment = {
     ...comment,
-    replies: [...restReplies, updateReply]
+    replies: [...restReplies, updateReply],
   };
 
   const restComments = blog.comments.filter(

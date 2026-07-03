@@ -6,7 +6,7 @@ export async function buildApp() {
     docs: {
       title: 'Blog Service',
       description: 'Documentation of the Blog Service',
-      version: '1.0.0'
+      version: '1.0.0',
     },
   });
 

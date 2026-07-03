@@ -1,15 +1,11 @@
 import { api } from '@lib/data';
-import {
-  NotFoundError,
-  toData,
-  Tokens,
-} from '@lib/util';
+import { NotFoundError, Tokens, toData } from '@lib/util';
 import type { ConvexHttpClient } from 'convex/browser';
 import type { FastifyBaseLogger } from 'fastify';
 import { type RequestHandler, requestHandler } from 'mediatr-ts';
 import { inject, injectable } from 'tsyringe';
+import { toUser, type UserData } from '../user.schema.js';
 import { toUpdateUserArgs, UpdateUserCommand } from './update-user.command.js';
-import { toUser, UserData } from '../user.schema.js';
 
 @injectable()
 @requestHandler(UpdateUserCommand)
@@ -37,6 +33,6 @@ export class UpdateUserHandler
       throw new NotFoundError({ resource: `user with id ${userId}` });
     }
 
-    return toData({ data: toUser(updated)});
+    return toData({ data: toUser(updated) });
   }
 }
