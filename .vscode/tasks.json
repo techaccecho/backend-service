@@ -1,0 +1,42 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Dev Blog",
+      "type": "npm",
+      "script": "dev:blog",
+      "path": ".",
+      "group": "build"
+    },
+    {
+      "label": "Dev Auth",
+      "type": "npm",
+      "script": "dev:auth",
+      "path": "."
+    },
+    {
+      "label": "Build All",
+      "type": "npm",
+      "script": "build",
+      "path": "."
+    },
+    {
+      "label": "Build Libs",
+      "type": "npm",
+      "script": "build:libs",
+      "path": "."
+    },
+    {
+      "label": "Lint",
+      "type": "npm",
+      "script": "lint",
+      "path": "."
+    },
+    {
+      "label": "Convex dev",
+      "type": "npm",
+      "script": "dev:convex",
+      "path": "lib/data"
+    }
+  ]
+}

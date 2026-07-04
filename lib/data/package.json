@@ -13,11 +13,13 @@
     }
   },
   "scripts": {
+    "predev": "cpy \"convex/_generated/**/*\" dist/convex/_generated",
     "dev": "tsc -b --watch",
     "dev:convex": "convex dev",
+    "prebuild": "cpy \"convex/_generated/**/*\" dist/convex/_generated",
     "build": "tsc -b",
-    "clean": "rimraf dist --glob \"convex/*.{js,d.ts,d.ts.map}\"",
-    "clean:build": "rimraf dist --glob \"convex/*.{js,d.ts,d.ts.map}\" && tsc -b",
+    "clean": "rimraf dist",
+    "clean:build": "rimraf dist && tsc -b && cpy \"convex/_generated/**/*\" dist/convex/_generated",
     "test": "vitest run",
     "test:watch": "vitest"
   },
