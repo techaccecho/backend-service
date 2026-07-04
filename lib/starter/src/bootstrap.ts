@@ -67,7 +67,7 @@ export const bootstrap = async (config: BootstrapConfig) => {
           'body.refreshToken',
           'body.token',
           'body.secret',
-          'body.apiKeys',
+          'body.apiKey',
         ],
         censor: '[REDACTED]',
       },
