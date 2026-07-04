@@ -1,8 +1,6 @@
-import { type Static, Type } from '@sinclair/typebox';
-import type {
-  AttributeEntity,
-} from '@lib/data';
+import type { AttributeEntity } from '@lib/data';
 import { toISO } from '@lib/util';
+import { type Static, Type } from '@sinclair/typebox';
 
 export const AttributeSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),

@@ -8,7 +8,7 @@ import type {
 import { now, uuid } from '@lib/util';
 import { type Static, Type } from '@sinclair/typebox';
 import { RequestData } from 'mediatr-ts';
-import { BlogData } from '../../blog/index.js';
+import type { BlogData } from '../../blog/index.js';
 
 export const UpdateCommentReplyParamsSchema = Type.Object({
   blogId: Type.String({
@@ -47,15 +47,17 @@ export const UpdateCommentReplyAttachmentSchema = Type.Partial(
   }),
 );
 
-export type UpdateCommentReplyAttachment = Static<typeof UpdateCommentReplyAttachmentSchema>;
+export type UpdateCommentReplyAttachment = Static<
+  typeof UpdateCommentReplyAttachmentSchema
+>;
 
 export const UpdateCommentReplySchema = Type.Partial(
   Type.Object({
-  content: Type.String({ description: 'The actual content' }),
-  attachments: Type.Array(UpdateCommentReplyAttachmentSchema, {
-    description: 'The attachments referenced',
+    content: Type.String({ description: 'The actual content' }),
+    attachments: Type.Array(UpdateCommentReplyAttachmentSchema, {
+      description: 'The attachments referenced',
+    }),
   }),
-})
 );
 
 export type UpdateCommentReply = Static<typeof UpdateCommentReplySchema>;

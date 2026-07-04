@@ -7,10 +7,6 @@ export default defineConfig({
   dts: false,
   tsconfig: 'tsconfig.json',
   clean: true,
-  noExternal: [
-    '@lib/data',
-    '@lib/util',
-    '@lib/domain',
-    '@lib/starter'
-  ]
+  splitting: false,
+  noExternal: ['@lib/data', '@lib/util', '@lib/domain', '@lib/starter'],
 });

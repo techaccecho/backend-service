@@ -1,7 +1,12 @@
 import type { Doc } from '@lib/data';
 import { DataSchema, PaginatedDataSchema, toISO } from '@lib/util';
 import { type Static, Type } from '@sinclair/typebox';
-import { AttributeSchema, toAttribute, AttachmentSchema, toAttachment } from '../util/index.js';
+import {
+  AttachmentSchema,
+  AttributeSchema,
+  toAttachment,
+  toAttribute,
+} from '../util/index.js';
 
 export const UserSchema = Type.Object({
   _id: Type.String(),
@@ -32,7 +37,6 @@ export const PaginatedUserDataSchema = PaginatedDataSchema(UserSchema);
 
 export type PaginatedUserData = Static<typeof PaginatedUserDataSchema>;
 
-
 export const toUser = (request: Doc<'users'>): User => ({
   _id: request._id,
   id: request.id,
@@ -46,7 +50,7 @@ export const toUser = (request: Doc<'users'>): User => ({
   preferences: request.preferences.map(toAttribute),
   role: request.role,
   isLocked: request.isLocked,
-  avatar: request.avatar && toAttachment(request.avatar) || null,
+  avatar: (request.avatar && toAttachment(request.avatar)) || null,
   createdAt: toISO(request.createdAt),
   updatedAt: toISO(request.updatedAt),
   lastActivityAt: toISO(request.lastActivityAt),
@@ -69,8 +73,11 @@ export type ArchivedUser = Static<typeof ArchivedUserSchema>;
 
 export const ArchivedUserDataSchema = DataSchema(ArchivedUserSchema);
 export type ArchivedUserData = Static<typeof ArchivedUserDataSchema>;
-export const PaginatedArchivedUserDataSchema = PaginatedDataSchema(ArchivedUserSchema);
-export type PaginatedArchivedUserData = Static<typeof PaginatedArchivedUserDataSchema>;
+export const PaginatedArchivedUserDataSchema =
+  PaginatedDataSchema(ArchivedUserSchema);
+export type PaginatedArchivedUserData = Static<
+  typeof PaginatedArchivedUserDataSchema
+>;
 
 export const toArchivedUser = (request: Doc<'users'>): ArchivedUser => ({
   id: request.id,

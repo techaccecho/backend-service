@@ -86,7 +86,7 @@ export const findArchived = query({
       .query('users')
       .withIndex('by_public_id', (q) => q.eq('id', args.id))
       .unique();
-    if (user && user.isLocked) {
+    if (user?.isLocked) {
       return user;
     }
     return null;

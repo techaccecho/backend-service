@@ -2,7 +2,7 @@ import type { CommentEntity, Doc, UpdateBlogArgs } from '@lib/data';
 import { now, uuid } from '@lib/util';
 import { type Static, Type } from '@sinclair/typebox';
 import { RequestData } from 'mediatr-ts';
-import { BlogData } from '../../blog/index.js';
+import type { BlogData } from '../../blog/index.js';
 
 export const CreateCommentReactionParamsSchema = Type.Object({
   blogId: Type.String({
@@ -63,7 +63,7 @@ export const toCreateCommentReactionArgs = (
     engagement: {
       ...comment.engagement,
       reactions: updateReactions.length,
-    }
+    },
   };
 
   const restComments = blog.comments.filter(

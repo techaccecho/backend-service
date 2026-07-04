@@ -1,8 +1,6 @@
-import { type Static, Type } from '@sinclair/typebox';
-import type {
-  AttachmentEntity,
-} from '@lib/data';
+import type { AttachmentEntity } from '@lib/data';
 import { toISO } from '@lib/util';
+import { type Static, Type } from '@sinclair/typebox';
 
 export const AttachmentSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),

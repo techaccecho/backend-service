@@ -4,8 +4,8 @@ import type { ConvexHttpClient } from 'convex/browser';
 import type { FastifyBaseLogger } from 'fastify';
 import { type RequestHandler, requestHandler } from 'mediatr-ts';
 import { inject, injectable } from 'tsyringe';
+import { type PaginatedBlogData, toBlog } from '../blog.schema.js';
 import { GetBlogsByTypeQuery } from './get-blogs-by-type.query.js';
-import { PaginatedBlogData, toBlog } from '../blog.schema.js';
 
 @injectable()
 @requestHandler(GetBlogsByTypeQuery)
@@ -31,7 +31,7 @@ export class GetBlogsByTypeHandler
 
     return toPaginatedData({
       result,
-      mapper: toBlog
+      mapper: toBlog,
     });
   }
 }

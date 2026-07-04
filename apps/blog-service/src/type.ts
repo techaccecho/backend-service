@@ -1,4 +1,11 @@
-import { AttributeEntity, CommentEntity, ReactionEntity, Doc, ReplyEntity, UserPreviewEntity } from '@lib/data';
+import type {
+  AttributeEntity,
+  CommentEntity,
+  Doc,
+  ReactionEntity,
+  ReplyEntity,
+  UserPreviewEntity,
+} from '@lib/data';
 
 declare module 'fastify' {
   interface FastifyRequest {

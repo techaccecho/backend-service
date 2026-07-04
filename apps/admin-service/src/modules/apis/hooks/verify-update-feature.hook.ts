@@ -1,24 +1,30 @@
-import type { FastifyReply, FastifyRequest } from 'fastify';
+import type { UpdateFeature } from '@lib/domain';
+import { type AsyncValidation, ValidationError } from '@lib/util';
 import type { ConvexHttpClient } from 'convex/browser';
-import { ValidationError, AsyncValidation } from '@lib/util';
-import { UpdateFeature } from '@lib/domain';
+import type { FastifyReply, FastifyRequest } from 'fastify';
 import { verifyMutateApi } from '../../util/index.js';
 
-export const verifyUpdateFeatureHook = (convex: ConvexHttpClient, validation: AsyncValidation) => {
-    return async (request: FastifyRequest<{
-        Body: UpdateFeature
-    }>, _: FastifyReply) => {
-      await verifyMutateApi(convex, request);
+export const verifyUpdateFeatureHook = (
+  convex: ConvexHttpClient,
+  validation: AsyncValidation,
+) => {
+  return async (
+    request: FastifyRequest<{
+      Body: UpdateFeature;
+    }>,
+    _: FastifyReply,
+  ) => {
+    await verifyMutateApi(convex, request);
 
-      const update = request.body;
-      
-      const validationDetails = await validation
-        .validator()
-        .notEmpty({ value: update })
-        .validate();
+    const update = request.body;
 
-      if (validationDetails.length > 0) {
-        throw new ValidationError({ details: validationDetails });
-      }
+    const validationDetails = await validation
+      .validator()
+      .notEmpty({ value: update })
+      .validate();
+
+    if (validationDetails.length > 0) {
+      throw new ValidationError({ details: validationDetails });
     }
-}
+  };
+};

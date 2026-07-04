@@ -1,9 +1,6 @@
 import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
+import { toUser, UserDataSchema } from '@lib/domain';
 import { AppErrorSchema, assertRequired, toData } from '@lib/util';
-import {
-    UserDataSchema,
-    toUser
-  } from '@lib/domain';
 
 export const authRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
   const { authenticate } = fastify;

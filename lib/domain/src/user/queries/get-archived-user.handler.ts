@@ -1,11 +1,11 @@
 import { api } from '@lib/data';
-import { NotFoundError, toData, Tokens } from '@lib/util';
+import { NotFoundError, Tokens, toData } from '@lib/util';
 import type { ConvexHttpClient } from 'convex/browser';
 import type { FastifyBaseLogger } from 'fastify';
 import { type RequestHandler, requestHandler } from 'mediatr-ts';
 import { inject, injectable } from 'tsyringe';
+import { type ArchivedUserData, toArchivedUser } from '../user.schema.js';
 import { GetArchivedUserQuery } from './get-user.query.js';
-import { toArchivedUser, ArchivedUserData } from '../user.schema.js';
 
 @injectable()
 @requestHandler(GetArchivedUserQuery)

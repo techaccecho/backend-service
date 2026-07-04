@@ -6,7 +6,7 @@ import type {
 } from '@lib/data';
 import { type Static, Type } from '@sinclair/typebox';
 import { RequestData } from 'mediatr-ts';
-import { BlogData } from '../../blog/index.js';
+import type { BlogData } from '../../blog/index.js';
 
 export const DeleteCommentReactionParamsSchema = Type.Object({
   blogId: Type.String({
@@ -47,8 +47,8 @@ export const toDeleteCommentReactionArgs = (
     reactions: restReactions,
     engagement: {
       ...comment.engagement,
-      reactions: restReactions.length
-    }
+      reactions: restReactions.length,
+    },
   };
 
   const restComments = blog.comments.filter(

@@ -2,7 +2,7 @@ import type { Doc, UpdateBlogArgs } from '@lib/data';
 import { now, uuid } from '@lib/util';
 import { type Static, Type } from '@sinclair/typebox';
 import { RequestData } from 'mediatr-ts';
-import { BlogData } from '../index.js';
+import type { BlogData } from '../index.js';
 
 export const CreateReactionParamsSchema = Type.Object({
   blogId: Type.String({

@@ -2,7 +2,7 @@ import type { CreateBlogArgs, Doc } from '@lib/data';
 import { now, uuid } from '@lib/util';
 import { type Static, Type } from '@sinclair/typebox';
 import { RequestData } from 'mediatr-ts';
-import { BlogData } from '../blog.schema.js';
+import type { BlogData } from '../blog.schema.js';
 
 const CreateAttachmentSchema = Type.Object({
   type: Type.Union([Type.Literal('media/image')], {

@@ -7,7 +7,7 @@ import type {
 import { now } from '@lib/util';
 import { type Static, Type } from '@sinclair/typebox';
 import { RequestData } from 'mediatr-ts';
-import { BlogData } from '../../blog/index.js';
+import type { BlogData } from '../../blog/index.js';
 
 export const UpdateCommentReactionParamsSchema = Type.Object({
   blogId: Type.String({

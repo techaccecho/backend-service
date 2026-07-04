@@ -8,7 +8,7 @@ import type {
 import { now } from '@lib/util';
 import { type Static, Type } from '@sinclair/typebox';
 import { RequestData } from 'mediatr-ts';
-import { BlogData } from '../../blog/index.js';
+import type { BlogData } from '../../blog/index.js';
 
 export const UpdateCommentReplyReactionParamsSchema = Type.Object({
   blogId: Type.String({
@@ -37,7 +37,9 @@ export const UpdateCommentReplyReactionSchema = Type.Object({
   code: Type.String({ description: 'The ASCII code of the reaction' }),
 });
 
-export type UpdateCommentReplyReaction = Static<typeof UpdateCommentReplyReactionSchema>;
+export type UpdateCommentReplyReaction = Static<
+  typeof UpdateCommentReplyReactionSchema
+>;
 
 export type UpdateCommentReplyReactionRequest = {
   params: UpdateCommentReplyReactionParams;

@@ -1,26 +1,34 @@
 import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
-import { container } from 'tsyringe';
-import { AppErrorSchema, QuerySchema, assertRequired, AsyncValidation } from '@lib/util';
-import { Type } from '@sinclair/typebox';
 import {
-    PaginatedUserDataSchema, UserDataSchema,
-    GetUserParamsSchema, GetUserQuery, GetUsersQuery,
-    CreateUserCommand,
-    CreateUserSchema,
-    DeleteUserCommand,
-    DeleteUserParamsSchema,
-    UpdateUserCommand,
-    UpdateUserParamsSchema,
-    UpdateUserSchema,
-    GetArchivedUsersQuery,
-    PaginatedArchivedUserDataSchema,
-    GetArchivedUserQuery,
-    ArchivedUserDataSchema,
-  } from '@lib/domain';
+  ArchivedUserDataSchema,
+  CreateUserCommand,
+  CreateUserSchema,
+  DeleteUserCommand,
+  DeleteUserParamsSchema,
+  GetArchivedUserQuery,
+  GetArchivedUsersQuery,
+  GetUserParamsSchema,
+  GetUserQuery,
+  GetUsersQuery,
+  PaginatedArchivedUserDataSchema,
+  PaginatedUserDataSchema,
+  UpdateUserCommand,
+  UpdateUserParamsSchema,
+  UpdateUserSchema,
+  UserDataSchema,
+} from '@lib/domain';
+import {
+  AppErrorSchema,
+  AsyncValidation,
+  assertRequired,
+  QuerySchema,
+} from '@lib/util';
+import { Type } from '@sinclair/typebox';
+import { container } from 'tsyringe';
 import {
   verifyCreateUserHook,
+  verifyDeleteUserHook,
   verifyUpdateUserHook,
-  verifyDeleteUserHook
 } from './hooks/index.js';
 
 export const usersRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
@@ -44,8 +52,8 @@ export const usersRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
     },
     async (request, reply) => {
       const { body } = request;
-      
-      const command = new CreateUserCommand({create: body});
+
+      const command = new CreateUserCommand({ create: body });
       const response = await mediator.send(command);
       return reply.status(201).send(response);
     },
@@ -69,7 +77,7 @@ export const usersRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
     },
     async (request, reply) => {
       const { params } = request;
-      const query = new GetUserQuery({params});
+      const query = new GetUserQuery({ params });
       const response = await mediator.send(query);
       return reply.status(200).send(response);
     },
@@ -91,7 +99,7 @@ export const usersRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
       preHandler: [authenticate],
     },
     async (request, reply) => {
-      const query = new GetUsersQuery({query: request.query});
+      const query = new GetUsersQuery({ query: request.query });
       const response = await mediator.send(query);
       return reply.status(200).send(response);
     },
@@ -113,7 +121,7 @@ export const usersRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
       preHandler: [],
     },
     async (request, reply) => {
-      const query = new GetArchivedUsersQuery({query: request.query});
+      const query = new GetArchivedUsersQuery({ query: request.query });
       const response = await mediator.send(query);
       return reply.status(200).send(response);
     },
@@ -137,7 +145,7 @@ export const usersRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
     },
     async (request, reply) => {
       const { params } = request;
-      const query = new GetArchivedUserQuery({params});
+      const query = new GetArchivedUserQuery({ params });
       const response = await mediator.send(query);
       return reply.status(200).send(response);
     },
@@ -164,7 +172,11 @@ export const usersRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
       const { params, body, userRequest } = request;
 
       assertRequired('userRequest', userRequest);
-      const command = new UpdateUserCommand({params, update: body, existing: userRequest});
+      const command = new UpdateUserCommand({
+        params,
+        update: body,
+        existing: userRequest,
+      });
       const response = await mediator.send(command);
       return reply.status(200).send(response);
     },
@@ -190,7 +202,7 @@ export const usersRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
       const { params, userRequest } = request;
       assertRequired('userRequest', userRequest);
 
-      const command = new DeleteUserCommand({params, existing: userRequest });
+      const command = new DeleteUserCommand({ params, existing: userRequest });
       await mediator.send(command);
       return reply.status(204).send(null);
     },

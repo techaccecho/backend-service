@@ -1,5 +1,5 @@
 {
-  "buildCommand": "pnpm build:api",
+  "buildCommand": "pnpm build",
   "outputDirectory": "api",
   "routes": [
     {

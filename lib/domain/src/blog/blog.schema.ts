@@ -8,7 +8,12 @@ import type {
 } from '@lib/data';
 import { DataSchema, PaginatedDataSchema, toISO } from '@lib/util';
 import { type Static, Type } from '@sinclair/typebox';
-import { toAttribute, AttributeSchema, toAttachment, AttachmentSchema } from '../util/index.js';
+import {
+  AttachmentSchema,
+  AttributeSchema,
+  toAttachment,
+  toAttribute,
+} from '../util/index.js';
 
 export const UserPreviewSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),

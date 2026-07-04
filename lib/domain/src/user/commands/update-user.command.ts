@@ -2,7 +2,7 @@ import type { Doc, UpdateUserArgs } from '@lib/data';
 import { now } from '@lib/util';
 import { type Static, Type } from '@sinclair/typebox';
 import { RequestData } from 'mediatr-ts';
-import { UserData } from '../user.schema.js';
+import type { UserData } from '../user.schema.js';
 
 export const UpdateUserParamsSchema = Type.Object({
   userId: Type.String({
@@ -65,7 +65,7 @@ export const UpdateUserSchema = Type.Partial(
     isLocked: Type.Optional(
       Type.Boolean({ description: 'Whether the user is locked' }),
     ),
-    avatar: Type.Optional(UpdateAvatarSchema)
+    avatar: Type.Optional(UpdateAvatarSchema),
   }),
 );
 

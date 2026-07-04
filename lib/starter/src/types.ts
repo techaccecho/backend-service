@@ -1,21 +1,19 @@
-import { Doc } from '@lib/data';
-import type { Auth } from '@lib/util';
+import type { Doc } from '@lib/data';
+import type { Auth, Config } from '@lib/util';
+import type { ConvexHttpClient } from 'convex/browser';
 import type { preHandlerHookHandler } from 'fastify';
-import { ConvexHttpClient } from 'convex/browser';
-import { Mediator } from 'mediatr-ts';
-
-import { type Config } from '@lib/util';
+import type { Mediator } from 'mediatr-ts';
 
 declare module 'fastify' {
   interface FastifyInstance {
-     config: Config;
-     mediator: Mediator;
-     convex: ConvexHttpClient;
-     authenticate: preHandlerHookHandler;
+    config: Config;
+    mediator: Mediator;
+    convex: ConvexHttpClient;
+    authenticate: preHandlerHookHandler;
   }
   interface FastifyRequest {
     auth?: Auth;
-    userRequest?: Doc<'users'>
+    userRequest?: Doc<'users'>;
   }
 }
 

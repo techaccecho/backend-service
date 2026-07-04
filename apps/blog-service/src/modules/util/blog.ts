@@ -1,113 +1,142 @@
-import type { FastifyRequest } from 'fastify';
-import { assertRequired, assertHasStringKey, NotFoundError, ForbiddenError } from '@lib/util';
 import { api } from '@lib/data';
+import type { UpdateBlog } from '@lib/domain';
+import {
+  type AsyncValidation,
+  assertHasStringKey,
+  assertRequired,
+  ForbiddenError,
+  NotFoundError,
+  ValidationError,
+} from '@lib/util';
 import type { ConvexHttpClient } from 'convex/browser';
-import { ValidationError, AsyncValidation } from '@lib/util';
-import { UpdateBlog } from '@lib/domain';
+import type { FastifyRequest } from 'fastify';
 
-export const verifyMutateBlog = async (convex: ConvexHttpClient, request: FastifyRequest, verifyAuthor: boolean = true) => {
-    const { auth } = request;
+export const verifyMutateBlog = async (
+  convex: ConvexHttpClient,
+  request: FastifyRequest,
+  verifyAuthor: boolean = true,
+) => {
+  const { auth } = request;
 
-    assertRequired('auth', auth);
-    assertHasStringKey(request.params, 'blogId');
+  assertRequired('auth', auth);
+  assertHasStringKey(request.params, 'blogId');
 
-    const { blogId } = request.params;
+  const { blogId } = request.params;
 
-    const response = await convex.query(api.blogs.find, { id: blogId });
+  const response = await convex.query(api.blogs.find, { id: blogId });
 
-    if (response == null) {
-        throw new NotFoundError({ resource: `blog with id ${blogId}` });
-    }
+  if (response == null) {
+    throw new NotFoundError({ resource: `blog with id ${blogId}` });
+  }
 
-    if(auth.type === 'api' || auth.user.role === 'admin') {
-        return;
-    }
+  if (auth.type === 'api' || auth.user.role === 'admin') {
+    return;
+  }
 
-    if (verifyAuthor && response.author.id !== auth.user.id) {
-        throw new ForbiddenError();
-    }
+  if (verifyAuthor && response.author.id !== auth.user.id) {
+    throw new ForbiddenError();
+  }
 
-    request.blog = response;
-}
+  request.blog = response;
+};
 
-export const verifyMutateReaction = async (convex: ConvexHttpClient, request: FastifyRequest) => {
-    await verifyMutateBlog(convex, request, false);
-    
-    const { auth, params, blog } = request;
+export const verifyMutateReaction = async (
+  convex: ConvexHttpClient,
+  request: FastifyRequest,
+) => {
+  await verifyMutateBlog(convex, request, false);
 
-    assertRequired('auth', auth);
-    assertHasStringKey(params, 'reactionId');
-    assertRequired('blog', blog);
+  const { auth, params, blog } = request;
 
-    const { reactionId } = params;
+  assertRequired('auth', auth);
+  assertHasStringKey(params, 'reactionId');
+  assertRequired('blog', blog);
 
-    const reactionResponse = blog.reactions.find(reaction => reaction.id == reactionId);
+  const { reactionId } = params;
 
-    if (reactionResponse == null) {
-        throw new NotFoundError({ resource: `reaction with id ${reactionId}` });
-    }
+  const reactionResponse = blog.reactions.find(
+    (reaction) => reaction.id === reactionId,
+  );
 
-    if(auth.type === 'api' || auth.user.role === 'admin') {
-        return;
-    }
+  if (reactionResponse == null) {
+    throw new NotFoundError({ resource: `reaction with id ${reactionId}` });
+  }
 
-    if (reactionResponse.user.id !== auth.user.id) {
-        throw new ForbiddenError();
-    }
+  if (auth.type === 'api' || auth.user.role === 'admin') {
+    return;
+  }
 
-    request.reaction = reactionResponse;
-}
+  if (reactionResponse.user.id !== auth.user.id) {
+    throw new ForbiddenError();
+  }
 
-export const verifyMutateTag = async (convex: ConvexHttpClient, request: FastifyRequest) => {
-    await verifyMutateBlog(convex, request);
+  request.reaction = reactionResponse;
+};
 
-    const { auth, params, blog } = request;
+export const verifyMutateTag = async (
+  convex: ConvexHttpClient,
+  request: FastifyRequest,
+) => {
+  await verifyMutateBlog(convex, request);
 
-    assertRequired('auth', auth);
-    assertHasStringKey(params, 'tagId');
-    assertRequired('blog', blog);
+  const { auth, params, blog } = request;
 
-    const { tagId } = params;
+  assertRequired('auth', auth);
+  assertHasStringKey(params, 'tagId');
+  assertRequired('blog', blog);
 
-    const tagResponse = blog.tags.find(tag => tag.id == tagId);
+  const { tagId } = params;
 
-    if (tagResponse == null) {
-        throw new NotFoundError({ resource: `tag with id ${tagId}` });
-    }
+  const tagResponse = blog.tags.find((tag) => tag.id === tagId);
 
-    request.tag = tagResponse;
-}
+  if (tagResponse == null) {
+    throw new NotFoundError({ resource: `tag with id ${tagId}` });
+  }
 
-export const verifyMutateParticipant = async (convex: ConvexHttpClient, request: FastifyRequest) => {
-    await verifyMutateBlog(convex, request);
+  request.tag = tagResponse;
+};
 
-    const { auth, params, blog } = request;
+export const verifyMutateParticipant = async (
+  convex: ConvexHttpClient,
+  request: FastifyRequest,
+) => {
+  await verifyMutateBlog(convex, request);
 
-    assertRequired('auth', auth);
-    assertHasStringKey(params, 'participantId');
-    assertRequired('blog', blog);
+  const { auth, params, blog } = request;
 
-    const { participantId } = params;
+  assertRequired('auth', auth);
+  assertHasStringKey(params, 'participantId');
+  assertRequired('blog', blog);
 
-    const participantResponse = blog.participants.find(participant => participant.id == participantId);
+  const { participantId } = params;
 
-    if (participantResponse == null) {
-        throw new NotFoundError({ resource: `participant with id ${participantId}` });
-    }
+  const participantResponse = blog.participants.find(
+    (participant) => participant.id === participantId,
+  );
 
-    request.participant = participantResponse;
-}
+  if (participantResponse == null) {
+    throw new NotFoundError({
+      resource: `participant with id ${participantId}`,
+    });
+  }
 
-export const verifyUpdateBlog = async (convex: ConvexHttpClient, validation: AsyncValidation, request: FastifyRequest) => {
-    await verifyMutateBlog(convex, request);
-    const update = request.body as UpdateBlog;
-    
-    const validationDetails = await validation
-        .validator()
-        .notEmpty({ value: update })
-        .validate();
+  request.participant = participantResponse;
+};
 
-    if (validationDetails.length > 0) {
-        throw new ValidationError({ details: validationDetails });
-    }
-}
+export const verifyUpdateBlog = async (
+  convex: ConvexHttpClient,
+  validation: AsyncValidation,
+  request: FastifyRequest,
+) => {
+  await verifyMutateBlog(convex, request);
+  const update = request.body as UpdateBlog;
+
+  const validationDetails = await validation
+    .validator()
+    .notEmpty({ value: update })
+    .validate();
+
+  if (validationDetails.length > 0) {
+    throw new ValidationError({ details: validationDetails });
+  }
+};

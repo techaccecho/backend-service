@@ -1,6 +1,9 @@
 import type { Query } from '@lib/util';
 import { RequestData } from 'mediatr-ts';
-import { PaginatedUserData, PaginatedArchivedUserData } from '../user.schema.js';
+import type {
+  PaginatedArchivedUserData,
+  PaginatedUserData,
+} from '../user.schema.js';
 
 export type GetUsersRequest = {
   query: Query;

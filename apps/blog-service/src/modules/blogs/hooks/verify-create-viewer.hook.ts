@@ -1,13 +1,16 @@
-import type { FastifyReply, FastifyRequest } from 'fastify';
+import type { CreateViewer } from '@lib/domain';
 import type { ConvexHttpClient } from 'convex/browser';
-import { CreateViewer } from '@lib/domain';
-import { verifyUserId, verifyMutateBlog } from '../../util/index.js';
+import type { FastifyReply, FastifyRequest } from 'fastify';
+import { verifyMutateBlog, verifyUserId } from '../../util/index.js';
 
 export const verifyCreateViewerHook = (convex: ConvexHttpClient) => {
-    return async (request: FastifyRequest<{
-        Body: CreateViewer
-    }>, _: FastifyReply) => {
-       await verifyUserId(convex, request);
-       await verifyMutateBlog(convex, request, false);
-    }
-}
+  return async (
+    request: FastifyRequest<{
+      Body: CreateViewer;
+    }>,
+    _: FastifyReply,
+  ) => {
+    await verifyUserId(convex, request);
+    await verifyMutateBlog(convex, request, false);
+  };
+};

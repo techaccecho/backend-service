@@ -2,16 +2,16 @@ import { api } from '@lib/data';
 import {
   AsyncValidation,
   NotFoundError,
-  toData,
   Tokens,
+  toData,
   ValidationError,
 } from '@lib/util';
 import type { ConvexHttpClient } from 'convex/browser';
 import type { FastifyBaseLogger } from 'fastify';
 import { type RequestHandler, requestHandler } from 'mediatr-ts';
 import { inject, injectable } from 'tsyringe';
+import { toUser, type UserData } from '../user.schema.js';
 import { CreateUserCommand, toCreateUserArgs } from './create-user.command.js';
-import { toUser, UserData } from '../user.schema.js';
 
 @injectable()
 @requestHandler(CreateUserCommand)
@@ -57,6 +57,6 @@ export class CreateUserHandler
       throw new NotFoundError({ resource: `user with id ${id}` });
     }
 
-    return toData({ data: toUser(created)});
+    return toData({ data: toUser(created) });
   }
 }

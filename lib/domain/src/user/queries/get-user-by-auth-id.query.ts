@@ -1,6 +1,6 @@
 import { type Static, Type } from '@sinclair/typebox';
 import { RequestData } from 'mediatr-ts';
-import { UserData } from '../user.schema.js';
+import type { UserData } from '../user.schema.js';
 
 export const GetUserByAuthIdParamsSchema = Type.Object({
   authId: Type.String({

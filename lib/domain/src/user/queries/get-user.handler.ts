@@ -1,17 +1,15 @@
 import { api } from '@lib/data';
-import { NotFoundError, toData, Tokens } from '@lib/util';
+import { NotFoundError, Tokens, toData } from '@lib/util';
 import type { ConvexHttpClient } from 'convex/browser';
 import type { FastifyBaseLogger } from 'fastify';
 import { type RequestHandler, requestHandler } from 'mediatr-ts';
 import { inject, injectable } from 'tsyringe';
+import { toUser, type UserData } from '../user.schema.js';
 import { GetUserQuery } from './get-user.query.js';
-import { toUser, UserData } from '../user.schema.js';
 
 @injectable()
 @requestHandler(GetUserQuery)
-export class GetUserHandler
-  implements RequestHandler<GetUserQuery, UserData>
-{
+export class GetUserHandler implements RequestHandler<GetUserQuery, UserData> {
   constructor(
     @inject(Tokens.Logger) private readonly logger: FastifyBaseLogger,
     @inject(Tokens.ConvexClient) private readonly convex: ConvexHttpClient,
@@ -32,6 +30,6 @@ export class GetUserHandler
       throw new NotFoundError({ resource: `user with id ${userId}` });
     }
 
-    return toData({ data: toUser(response)});
+    return toData({ data: toUser(response) });
   }
 }

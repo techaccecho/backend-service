@@ -1,7 +1,7 @@
-import type { ReactionEntity, Doc, UpdateBlogArgs } from '@lib/data';
+import type { Doc, ReactionEntity, UpdateBlogArgs } from '@lib/data';
 import { type Static, Type } from '@sinclair/typebox';
 import { RequestData } from 'mediatr-ts';
-import { BlogData } from '../blog.schema.js';
+import type { BlogData } from '../blog.schema.js';
 
 export const DeleteReactionParamsSchema = Type.Object({
   blogId: Type.String({

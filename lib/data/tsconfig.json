@@ -4,9 +4,9 @@
     "composite": true,
     "declaration": true,
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDir": ".",
     "tsBuildInfoFile": "dist/.tsbuildinfo"
   },
-  "include": ["src"],
+  "include": ["index.ts", "convex"],
   "exclude": ["node_modules", "dist"]
 }

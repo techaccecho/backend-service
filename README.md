@@ -1,99 +1,194 @@
 # Backend Service Monorepo
 
-This is the central backend services repository.
+This repository contains the backend services for the platform. It is built using **pnpm workspaces** and **TypeScript Project References** to share code between reusable libraries and deployable microservices.
+
+---
 
 ## Repository Structure
 
-The project uses an monorepo structure that separates reusable logic-layer packages from deployable services.
-
 ```text
 backend-service/
-├── apps/               # Application microservices
+├── apps/                     # Deployable microservices
 │   ├── admin-service/
 │   ├── auth-service/
-│   ├── blog-service/   # Blog App integration
+│   ├── blog-service/
 │   └── game-service/
-├── lib/                # Reusable workspace packages
-│   ├── data/           # Convex
-│   ├── domain/         # Domain models and services
-│   ├── starter/        # Sets up a basic fastify api with auth routes which can be extended
-│   └── util/           # Shared utilities
-├── package.json        # Root scripts and workspace registry
-├── pnpm-workspace.yaml # Workspace package layout mapping
-└── tsconfig.json       # Monorepo composite references mapping
+│
+├── lib/                      # Shared workspace libraries
+│   ├── data/                 # Convex integration
+│   ├── domain/               # Domain models & business logic
+│   ├── starter/              # Shared Fastify bootstrap
+│   └── util/                 # Shared utilities
+│
+├── package.json              # Workspace scripts
+├── pnpm-workspace.yaml
+├── tsconfig.json             # TypeScript project references
+└── tsconfig.base.json
 ```
+
+---
 
 ## Prerequisites
 
-Ensure the following global runtimes are installed:
+Install the following:
 
-* Node.js — LTS
-* pnpm — Package manager
-
-If pnpm is not installed, install it globally with npm:
+- Node.js (LTS)
+- pnpm
 
 ```bash
 npm install -g pnpm
 ```
 
-## Getting Started
+---
 
-Follow these steps in sequence to configure your local development workspace.
+## Installation
 
-### 1. Install Workspace Dependencies
-
-From the repository root (`backend-service/`), install dependencies for all libraries and microservices:
+Clone the repository and install all workspace dependencies.
 
 ```bash
 pnpm install
 ```
 
-### 2. Build Internal Libraries
+---
 
-Application services cross-reference internal configurations in `lib/*`, so run an initial compilation step:
+## Environment Variables
 
-```bash
-pnpm build
-```
+Each application has its own `.env` file.
 
-This compiles the shared `data`, `util`, `domain`, and `starter` layers.
-
-### 3. Configure Environment Variables
-
-Application services require environment variables to communicate with Convex and Auth0.
-
-Create a `.env` file inside the service folder you want to run. For example:
+For example:
 
 ```text
 apps/blog-service/.env
 ```
 
-Add your development configuration:
+Example:
 
 ```env
-CONVEX_DEPLOYMENT=<replace_with_convex_deployment>
-CONVEX_URL=<replace_with_convex_url>
+CONVEX_DEPLOYMENT=<deployment>
+
+CONVEX_URL=<url>
 
 LOG_LEVEL=info
 PORT=3000
 NODE_ENV=dev
 
-API_KEY=<replace_with_api_key>
+API_KEY=<api_key>
 
-AUTH_DOMAIN=<replace_with_auth_domain>
-AUTH_CLIENT_ID=<replace_with_auth_client_id>
-AUTH_CLIENT_SECRET=<replace_with_auth_client_secret>
+AUTH_DOMAIN=<domain>
+AUTH_CLIENT_ID=<client_id>
+AUTH_CLIENT_SECRET=<client_secret>
 ```
 
-> **Security note:** Do not commit `.env` files or production credentials to repository
+> Never commit `.env` files or production credentials.
 
-### 4. Run Services Locally
+---
 
-Run a specific service from the root workspace using the scripts defined in the root `package.json`.
+## Development
 
-| Feature Area  | Development Script | Target                           |
-| ------------- | ------------------ | -------------------------------- |
-| Blog Service  | `pnpm dev:blog`    | `http://localhost:3000/blog-api` |
-| Auth Service  | `pnpm dev:auth`    | `http://localhost:3000/auth-api` |
-| Admin Service | `pnpm dev:admin`   | `http://localhost:3000/admin-api`|
-| Game Service  | `pnpm dev:game`    | `http://localhost:3000/game-api` |
+Each service can be started independently.
+
+```bash
+pnpm dev:blog
+```
+
+Available commands:
+
+| Service | Command |
+| ---------- | --------- |
+| Blog | `pnpm dev:blog` |
+| Auth | `pnpm dev:auth` |
+| Admin | `pnpm dev:admin` |
+| Game | `pnpm dev:game` |
+
+During development:
+
+- Workspace library dependencies are automatically built before the service starts.
+- Library changes are watched and rebuilt using TypeScript Project References.
+- The service automatically restarts when compiled output changes.
+
+---
+
+## Building
+
+Build the entire workspace:
+
+```bash
+pnpm build
+```
+
+Build only shared libraries:
+
+```bash
+pnpm build:libs
+```
+
+Build only applications:
+
+```bash
+pnpm build:apps
+```
+
+---
+
+## Cleaning
+
+Remove all build output:
+
+```bash
+pnpm clean
+```
+
+Rebuild everything from scratch:
+
+```bash
+pnpm clean:build
+```
+
+---
+
+## Starting a Built Service
+
+After building:
+
+```bash
+pnpm start:blog
+```
+
+Available commands:
+
+| Service | Command |
+| ---------- | --------- |
+| Blog | `pnpm start:blog` |
+| Auth | `pnpm start:auth` |
+| Admin | `pnpm start:admin` |
+| Game | `pnpm start:game` |
+
+---
+
+## Workspace Architecture
+
+The repository uses:
+
+- **pnpm Workspaces** for package management
+- **TypeScript Project References** for incremental builds
+- **Fastify** for HTTP services
+- **Biome** for formatting and linting
+- **Husky + lint-staged** for Git hooks
+- **tsup** for bundling Vercel serverless entry points
+
+Shared libraries are compiled once and referenced by all services, ensuring incremental builds and fast local development.
+
+---
+
+## Useful Commands
+
+| Command | Description |
+| ---------- | ------------- |
+| `pnpm build` | Build all libraries and applications |
+| `pnpm build:libs` | Build shared libraries only |
+| `pnpm build:apps` | Build applications only |
+| `pnpm clean` | Remove all build output |
+| `pnpm clean:build` | Clean and rebuild everything |
+| `pnpm lint` | Run Biome checks |
+| `pnpm lint:fix` | Fix lint issues |
+| `pnpm format` | Format the repository |
