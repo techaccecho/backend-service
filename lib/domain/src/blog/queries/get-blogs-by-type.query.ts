@@ -3,7 +3,7 @@ import { RequestData } from 'mediatr-ts';
 import type { PaginatedBlogData } from '../blog.schema.js';
 
 export type GetBlogsByTypeRequest = {
-  type: 'post' | 'thread';
+  type: 'post' | 'thread' | 'none';
   query: Query;
 };
 

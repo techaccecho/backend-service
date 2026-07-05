@@ -22,9 +22,12 @@ export const CreateBlogSchema = Type.Object({
     description: 'The actual content/description of the blog',
   }),
   authorId: Type.String({ description: 'The id of the blog writer' }),
-  type: Type.Union([Type.Literal('post'), Type.Literal('thread')], {
-    description: 'The type of the blog. Whether its a blog post or a topic',
-  }),
+  type: Type.Union(
+    [Type.Literal('post'), Type.Literal('thread'), Type.Literal('none')],
+    {
+      description: 'The type of the blog. Whether its a blog post or a topic',
+    },
+  ),
   tags: Type.Optional(
     Type.Array(
       Type.Object({

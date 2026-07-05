@@ -116,7 +116,7 @@ export type CommentEntity = Infer<typeof CommentEntitySchema>;
 export const BlogEntitySchema = v.object({
   id: v.string(),
   author: UserPreviewEntitySchema,
-  type: v.union(v.literal('post'), v.literal('thread')),
+  type: v.union(v.literal('post'), v.literal('thread'), v.literal('none')),
   tags: v.array(AttributeEntitySchema),
   title: v.string(),
   content: v.string(),
@@ -214,7 +214,9 @@ export type CreateBlogArgs = Infer<typeof BlogEntitySchema>;
 export const UpdateBlogSchema = v.object({
   id: v.id('blogs'),
   updates: v.object({
-    type: v.optional(v.union(v.literal('post'), v.literal('thread'))),
+    type: v.optional(
+      v.union(v.literal('post'), v.literal('thread'), v.literal('none')),
+    ),
     tags: v.optional(v.array(AttributeEntitySchema)),
     title: v.optional(v.string()),
     content: v.optional(v.string()),
@@ -283,7 +285,7 @@ export const UpdateUserSchema = v.object({
 export type UpdateUserArgs = Infer<typeof UpdateUserSchema>;
 
 export const BlogTypeSchema = v.object({
-  type: v.union(v.literal('post'), v.literal('thread')),
+  type: v.union(v.literal('post'), v.literal('thread'), v.literal('none')),
   paginationOpts: paginationOptsValidator,
   sort: v.optional(v.union(v.literal('asc'), v.literal('desc'))),
 });
