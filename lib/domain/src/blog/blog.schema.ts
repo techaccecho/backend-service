@@ -76,7 +76,11 @@ export const BlogSchema = Type.Object({
   author: UserPreviewSchema,
   title: Type.String(),
   content: Type.String(),
-  type: Type.Union([Type.Literal('post'), Type.Literal('thread')]),
+  type: Type.Union([
+    Type.Literal('post'),
+    Type.Literal('thread'),
+    Type.Literal('none'),
+  ]),
   tags: Type.Array(AttributeSchema),
   priority: Type.Number(),
   isDraft: Type.Boolean(),
