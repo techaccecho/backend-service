@@ -152,3 +152,4 @@ vite.config.ts.timestamp-*
 /lib/data/convex/**/*.js
 
 .env.local
+.idea

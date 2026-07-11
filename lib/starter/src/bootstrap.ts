@@ -127,7 +127,7 @@ export const bootstrap = async (config: BootstrapConfig) => {
   // Cors
   await app.register(cors, {
     origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   });
 
   // Routes

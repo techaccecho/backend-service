@@ -29,6 +29,8 @@ export const verifyMutateBlog = async (
     throw new NotFoundError({ resource: `blog with id ${blogId}` });
   }
 
+  request.blog = response;
+
   if (auth.type === 'api' || auth.user.role === 'admin') {
     return;
   }
@@ -36,8 +38,6 @@ export const verifyMutateBlog = async (
   if (verifyAuthor && response.author.id !== auth.user.id) {
     throw new ForbiddenError();
   }
-
-  request.blog = response;
 };
 
 export const verifyMutateReaction = async (
