@@ -132,10 +132,24 @@ export const BlogEntitySchema = v.object({
   engagement: EngagementEntitySchema,
   createdAt: v.number(),
   updatedAt: v.nullable(v.number()),
+  deletedAt: v.optional(v.nullable(v.number())),
   lastActivityAt: v.number(),
 });
 
 export type BlogEntity = Infer<typeof BlogEntitySchema>;
+
+export const AdminBlogActionEntitySchema = v.object({
+  id: v.string(),
+  blogId: v.string(),
+  blog: BlogEntitySchema,
+  adminId: v.string(),
+  adminAlias: v.nullable(v.string()),
+  action: v.union(v.literal('soft_delete'), v.literal('hard_delete')),
+  reason: v.string(),
+  createdAt: v.number(),
+});
+
+export type AdminBlogActionEntity = Infer<typeof AdminBlogActionEntitySchema>;
 
 export const ApiConfigEntitySchema = v.object({
   auth: v.object({
@@ -192,6 +206,10 @@ export default defineSchema({
     .index('by_type', ['type'])
     .index('by_last_activity', ['lastActivityAt'])
     .index('by_type_last_activity', ['type', 'lastActivityAt']),
+  adminBlogActions: defineTable(AdminBlogActionEntitySchema)
+    .index('by_public_id', ['id'])
+    .index('by_blog_id', ['blogId'])
+    .index('by_admin_id', ['adminId']),
   apis: defineTable(ApiEntitySchema)
     .index('by_public_id', ['id'])
     .index('by_name', ['name']),
@@ -231,11 +249,16 @@ export const UpdateBlogSchema = v.object({
     viewers: v.optional(v.array(UserPreviewEntitySchema)),
     engagement: v.optional(EngagementEntitySchema),
     updatedAt: v.optional(v.number()),
+    deletedAt: v.optional(v.nullable(v.number())),
     lastActivityAt: v.optional(v.number()),
   }),
 });
 
 export type UpdateBlogArgs = Infer<typeof UpdateBlogSchema>;
+
+export type CreateAdminBlogActionArgs = Infer<
+  typeof AdminBlogActionEntitySchema
+>;
 
 export const UserIdSchema = v.object({
   id: v.id('users'),
@@ -288,9 +311,19 @@ export const BlogTypeSchema = v.object({
   type: v.union(v.literal('post'), v.literal('thread'), v.literal('none')),
   paginationOpts: paginationOptsValidator,
   sort: v.optional(v.union(v.literal('asc'), v.literal('desc'))),
+  userId: v.optional(v.string()),
+  role: v.optional(v.union(v.literal('user'), v.literal('admin'))),
 });
 
 export type BlogTypeArgs = Infer<typeof BlogTypeSchema>;
+
+export const BlogListSchema = v.object({
+  paginationOpts: paginationOptsValidator,
+  userId: v.optional(v.string()),
+  role: v.optional(v.union(v.literal('user'), v.literal('admin'))),
+});
+
+export type BlogListArgs = Infer<typeof BlogListSchema>;
 
 export const ApiIdSchema = v.object({
   id: v.id('apis'),

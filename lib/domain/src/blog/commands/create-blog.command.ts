@@ -3,6 +3,7 @@ import { now, uuid } from '@lib/util';
 import { type Static, Type } from '@sinclair/typebox';
 import { RequestData } from 'mediatr-ts';
 import type { BlogData } from '../blog.schema.js';
+import { sanitizeBlogContent } from '../blog-content.js';
 
 const CreateAttachmentSchema = Type.Object({
   type: Type.Union([Type.Literal('media/image')], {
@@ -20,6 +21,8 @@ export const CreateBlogSchema = Type.Object({
   title: Type.String({ description: 'The title of the blog' }),
   content: Type.String({
     description: 'The actual content/description of the blog',
+    minLength: 1,
+    maxLength: 5000,
   }),
   authorId: Type.String({ description: 'The id of the blog writer' }),
   type: Type.Union(
@@ -101,8 +104,8 @@ export const toCreateBlogArgs = (
 
   return {
     id: uuid(),
-    title: create.title,
-    content: create.content,
+    title: create.title.trim(),
+    content: sanitizeBlogContent(create.content),
     author: createAuthor,
     type: create.type,
     tags: [],

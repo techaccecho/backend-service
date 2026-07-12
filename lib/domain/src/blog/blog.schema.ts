@@ -1,4 +1,5 @@
 import type {
+  BlogEntity,
   CommentEntity,
   Doc,
   EngagementEntity,
@@ -94,6 +95,7 @@ export const BlogSchema = Type.Object({
   engagement: EngagementSchema,
   createdAt: Type.String({ format: 'date-time' }),
   updatedAt: Type.Union([Type.String({ format: 'date-time' }), Type.Null()]),
+  deletedAt: Type.Union([Type.String({ format: 'date-time' }), Type.Null()]),
   lastActivityAt: Type.String({ format: 'date-time' }),
 });
 
@@ -153,8 +155,14 @@ export const toBlog = (request: Doc<'blogs'>): Blog => ({
   engagement: toEngagement(request.engagement),
   createdAt: toISO(request.createdAt),
   updatedAt: toISO(request.updatedAt),
+  deletedAt: toISO(request.deletedAt ?? null),
   lastActivityAt: toISO(request.lastActivityAt),
 });
+
+export const toBlogEntity = (request: Doc<'blogs'>): BlogEntity => {
+  const { _id, _creationTime, ...blog } = request;
+  return blog;
+};
 
 export const assertBlog: (blog?: Blog | null) => asserts blog is Blog = (
   blog,

@@ -1,3 +1,4 @@
+import type { Doc } from '@lib/data';
 import { type Static, Type } from '@sinclair/typebox';
 import { RequestData } from 'mediatr-ts';
 import type { BlogData } from '../blog.schema.js';
@@ -13,6 +14,7 @@ export type GetBlogParams = Static<typeof GetBlogParamsSchema>;
 
 export type GetBlogRequest = {
   params: GetBlogParams;
+  user?: Doc<'users'>;
 };
 
 export class GetBlogQuery extends RequestData<BlogData> {
