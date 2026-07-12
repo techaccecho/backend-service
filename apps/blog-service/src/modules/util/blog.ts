@@ -35,6 +35,12 @@ export const verifyMutateBlog = async (
     return;
   }
 
+  if (response.deletedAt != null) {
+    throw new ForbiddenError({
+      message: 'Cannot mutate a soft-deleted blog',
+    });
+  }
+
   if (verifyAuthor && response.author.id !== auth.user.id) {
     throw new ForbiddenError();
   }

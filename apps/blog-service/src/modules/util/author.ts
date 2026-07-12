@@ -34,6 +34,8 @@ export const verifyAuthorId = async (
     });
   }
 
+  request.userRequest = userResponse;
+
   if (auth.type === 'api' || auth.user.role === 'admin') {
     return;
   }
@@ -41,6 +43,4 @@ export const verifyAuthorId = async (
   if (userResponse.id !== auth.user.id) {
     throw new ForbiddenError();
   }
-
-  request.userRequest = userResponse;
 };

@@ -30,6 +30,17 @@ export class GetBlogHandler implements RequestHandler<GetBlogQuery, BlogData> {
       throw new NotFoundError({ resource: `blog with id ${blogId}` });
     }
 
+    const { user } = request;
+    const isAdmin = user?.role === 'admin';
+    const isOwner = user?.id === response.author.id;
+    if (
+      (response.isDraft || response.deletedAt != null) &&
+      !isAdmin &&
+      !isOwner
+    ) {
+      throw new NotFoundError({ resource: `blog with id ${blogId}` });
+    }
+
     return toData({ data: toBlog(response) });
   }
 }

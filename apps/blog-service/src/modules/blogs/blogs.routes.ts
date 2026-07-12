@@ -17,6 +17,7 @@ import {
   CreateViewerSchema,
   DeleteBlogCommand,
   DeleteBlogParamsSchema,
+  DeleteBlogSchema,
   DeleteParticipantCommand,
   DeleteParticipantParamsSchema,
   DeleteReactionCommand,
@@ -28,6 +29,8 @@ import {
   GetBlogsByTypeQuery,
   GetBlogsQuery,
   PaginatedBlogDataSchema,
+  SoftDeleteBlogCommand,
+  SoftDeleteBlogSchema,
   UpdateBlogCommand,
   UpdateBlogParamsSchema,
   UpdateBlogSchema,
@@ -43,8 +46,10 @@ import {
   AsyncValidation,
   assertRequired,
   QuerySchema,
+  UnauthorizedError,
 } from '@lib/util';
 import { Type } from '@sinclair/typebox';
+import type { FastifyReply, FastifyRequest } from 'fastify';
 import { container } from 'tsyringe';
 import {
   verifyCreateBlogHook,
@@ -56,6 +61,7 @@ import {
   verifyDeleteParticipantHook,
   verifyDeleteReactionHook,
   verifyDeleteTagHook,
+  verifySoftDeleteBlogHook,
   verifyUpdateBlogHook,
   verifyUpdateReactionHook,
   verifyUpdateTagHook,
@@ -64,6 +70,29 @@ import {
 export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
   const validation = container.resolve(AsyncValidation);
   const { authenticate, convex, mediator } = fastify;
+  const optionalAuthenticate = async (
+    request: FastifyRequest,
+    reply: FastifyReply,
+  ) => {
+    if (
+      request.headers.authorization == null &&
+      request.headers['x-api-key'] == null
+    ) {
+      request.auth = undefined;
+      return;
+    }
+
+    await new Promise<void>((resolve, reject) => {
+      fastify.authenticate.call(fastify, request, reply, (error) => {
+        if (error != null) {
+          reject(new UnauthorizedError());
+          return;
+        }
+
+        resolve();
+      });
+    });
+  };
 
   fastify.post(
     '/blogs',
@@ -106,11 +135,14 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
           500: AppErrorSchema,
         },
       },
-      preHandler: [],
+      preHandler: [optionalAuthenticate],
     },
     async (request, reply) => {
       const { params } = request;
-      const query = new GetBlogQuery({ params });
+      const query = new GetBlogQuery({
+        params,
+        user: request.auth?.type === 'user' ? request.auth.user : undefined,
+      });
       const response = await mediator.send(query);
       return reply.status(200).send(response);
     },
@@ -129,10 +161,13 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
           500: AppErrorSchema,
         },
       },
-      preHandler: [],
+      preHandler: [optionalAuthenticate],
     },
     async (request, reply) => {
-      const query = new GetBlogsQuery({ query: request.query });
+      const query = new GetBlogsQuery({
+        query: request.query,
+        user: request.auth?.type === 'user' ? request.auth.user : undefined,
+      });
       const response = await mediator.send(query);
       return reply.status(200).send(response);
     },
@@ -176,6 +211,7 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
         description: 'Delete a blog',
         tags: ['Blogs'],
         params: DeleteBlogParamsSchema,
+        body: DeleteBlogSchema,
         response: {
           204: Type.Null(),
           400: AppErrorSchema,
@@ -186,12 +222,51 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
       preHandler: [authenticate, verifyDeleteBlogHook(convex)],
     },
     async (request, reply) => {
-      const { params, blog } = request;
+      const { params, body, blog } = request;
       assertRequired('blog', blog);
 
-      const command = new DeleteBlogCommand({ params, existing: blog });
+      const command = new DeleteBlogCommand({
+        params,
+        existing: blog,
+        user: request.auth?.type === 'user' ? request.auth.user : undefined,
+        delete: body,
+      });
       await mediator.send(command);
       return reply.status(204).send(null);
+    },
+  );
+
+  fastify.patch(
+    '/blogs/:blogId/soft-delete',
+    {
+      schema: {
+        description: 'Soft delete a blog',
+        tags: ['Blogs'],
+        params: UpdateBlogParamsSchema,
+        body: SoftDeleteBlogSchema,
+        response: {
+          200: BlogDataSchema,
+          400: AppErrorSchema,
+          403: AppErrorSchema,
+          404: AppErrorSchema,
+          500: AppErrorSchema,
+        },
+      },
+      preHandler: [authenticate, verifySoftDeleteBlogHook(convex)],
+    },
+    async (request, reply) => {
+      const { params, body, blog, userRequest } = request;
+      assertRequired('blog', blog);
+      assertRequired('userRequest', userRequest);
+
+      const command = new SoftDeleteBlogCommand({
+        params,
+        softDelete: body,
+        existing: blog,
+        user: userRequest,
+      });
+      const response = await mediator.send(command);
+      return reply.status(200).send(response);
     },
   );
 
@@ -208,12 +283,13 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
           500: AppErrorSchema,
         },
       },
-      preHandler: [],
+      preHandler: [optionalAuthenticate],
     },
     async (request, reply) => {
       const query = new GetBlogsByTypeQuery({
         query: request.query,
         type: 'post',
+        user: request.auth?.type === 'user' ? request.auth.user : undefined,
       });
       const response = await mediator.send(query);
       return reply.status(200).send(response);
@@ -233,12 +309,13 @@ export const blogsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
           500: AppErrorSchema,
         },
       },
-      preHandler: [],
+      preHandler: [optionalAuthenticate],
     },
     async (request, reply) => {
       const query = new GetBlogsByTypeQuery({
         query: request.query,
         type: 'thread',
+        user: request.auth?.type === 'user' ? request.auth.user : undefined,
       });
       const response = await mediator.send(query);
       return reply.status(200).send(response);

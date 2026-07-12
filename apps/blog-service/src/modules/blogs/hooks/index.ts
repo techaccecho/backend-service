@@ -7,6 +7,7 @@ export * from './verify-delete-blog.hook.js';
 export * from './verify-delete-participant.hook.js';
 export * from './verify-delete-reaction.hook.js';
 export * from './verify-delete-tag.hook.js';
+export * from './verify-soft-delete-blog.hook.js';
 export * from './verify-update-blog.hook.js';
 export * from './verify-update-reaction.hook.js';
 export * from './verify-update-tag.hook.js';

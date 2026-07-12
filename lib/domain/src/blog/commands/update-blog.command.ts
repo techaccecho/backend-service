@@ -3,6 +3,7 @@ import { now, uuid } from '@lib/util';
 import { type Static, Type } from '@sinclair/typebox';
 import { RequestData } from 'mediatr-ts';
 import type { BlogData } from '../blog.schema.js';
+import { sanitizeBlogContent } from '../blog-content.js';
 
 export const UpdateBlogParamsSchema = Type.Object({
   blogId: Type.String({
@@ -36,6 +37,8 @@ export const UpdateBlogSchema = Type.Partial(
     title: Type.String({ description: 'The title' }),
     content: Type.String({
       description: 'The actual content',
+      minLength: 1,
+      maxLength: 5000,
     }),
     priority: Type.Number({
       description: 'The priority',
@@ -106,8 +109,11 @@ export const toUpdateBlogArgs = (
   return {
     id: existing._id,
     updates: {
-      title: update.title ?? existing.title,
-      content: update.content ?? existing.content,
+      title: update.title?.trim() ?? existing.title,
+      content:
+        update.content != null
+          ? sanitizeBlogContent(update.content)
+          : existing.content,
       priority: update.priority ?? existing.priority,
       isDraft: update.isDraft ?? existing.isDraft,
       isPinned: update.isPinned ?? existing.isPinned,

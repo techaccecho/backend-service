@@ -23,6 +23,9 @@ export class GetBlogsHandler
 
     const result = await this.convex.query(api.blogs.list, {
       paginationOpts: toQuery(request.query),
+      ...(request.user != null
+        ? { userId: request.user.id, role: request.user.role }
+        : {}),
     });
 
     return toPaginatedData({
