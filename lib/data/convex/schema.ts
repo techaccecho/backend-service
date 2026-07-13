@@ -134,6 +134,7 @@ export const BlogEntitySchema = v.object({
   updatedAt: v.nullable(v.number()),
   deletedAt: v.optional(v.nullable(v.number())),
   lastActivityAt: v.number(),
+  searchableText: v.optional(v.string()),
 });
 
 export type BlogEntity = Infer<typeof BlogEntitySchema>;
@@ -222,7 +223,11 @@ export default defineSchema({
     .index('by_public_id', ['id'])
     .index('by_type', ['type'])
     .index('by_last_activity', ['lastActivityAt'])
-    .index('by_type_last_activity', ['type', 'lastActivityAt']),
+    .index('by_type_last_activity', ['type', 'lastActivityAt'])
+    .searchIndex('search_text', {
+      searchField: 'searchableText',
+      filterFields: ['type'],
+    }),
   adminBlogActions: defineTable(AdminBlogActionEntitySchema)
     .index('by_public_id', ['id'])
     .index('by_blog_id', ['blogId'])
@@ -271,6 +276,7 @@ export const UpdateBlogSchema = v.object({
     updatedAt: v.optional(v.number()),
     deletedAt: v.optional(v.nullable(v.number())),
     lastActivityAt: v.optional(v.number()),
+    searchableText: v.optional(v.string()),
   }),
 });
 
@@ -333,6 +339,7 @@ export const BlogTypeSchema = v.object({
   sort: v.optional(v.union(v.literal('asc'), v.literal('desc'))),
   userId: v.optional(v.string()),
   role: v.optional(v.union(v.literal('user'), v.literal('admin'))),
+  search: v.optional(v.string()),
 });
 
 export type BlogTypeArgs = Infer<typeof BlogTypeSchema>;

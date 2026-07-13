@@ -27,6 +27,7 @@ export class GetBlogsByTypeHandler
       type: type,
       paginationOpts: toQuery(request.query),
       ...(request.query.sort ? { sort: request.query.sort } : {}),
+      ...(request.query.search ? { search: request.query.search } : {}),
       ...(request.user != null
         ? { userId: request.user.id, role: request.user.role }
         : {}),
