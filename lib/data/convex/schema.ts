@@ -195,6 +195,23 @@ export const ApiEntitySchema = v.object({
 
 export type ApiEntity = Infer<typeof BlogEntitySchema>;
 
+export const FaqEntitySchema = v.object({
+  id: v.string(),
+  type: v.string(),
+  version: v.number(),
+  title: v.string(),
+  description: v.string(),
+  sortOrder: v.number(),
+  question: v.string(),
+  answer: v.string(),
+  tags: v.array(v.string()),
+  isActive: v.boolean(),
+  createdAt: v.number(),
+  updatedAt: v.nullable(v.number()),
+});
+
+export type FaqEntity = Infer<typeof FaqEntitySchema>;
+
 export default defineSchema({
   users: defineTable(UserEntitySchema)
     .index('by_public_id', ['id'])
@@ -213,6 +230,9 @@ export default defineSchema({
   apis: defineTable(ApiEntitySchema)
     .index('by_public_id', ['id'])
     .index('by_name', ['name']),
+  faqs: defineTable(FaqEntitySchema)
+    .index('by_public_id', ['id'])
+    .index('by_type_active', ['type', 'isActive']),
 });
 
 export const IdSchema = v.object({
@@ -338,6 +358,8 @@ export const ApiNameSchema = v.object({
 export type ApiNameArgs = Infer<typeof ApiNameSchema>;
 
 export type CreateApiArgs = Infer<typeof ApiEntitySchema>;
+
+export type CreateFaqArgs = Infer<typeof FaqEntitySchema>;
 
 export const UpdateApiSchema = v.object({
   id: v.id('apis'),
