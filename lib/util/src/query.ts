@@ -21,6 +21,11 @@ export const QuerySchema = Type.Object({
       description: 'Sort direction',
     }),
   ),
+  search: Type.Optional(
+    Type.String({
+      description: 'Search term for matching posts/threads',
+    }),
+  ),
 });
 
 export type Query = Static<typeof QuerySchema>;
