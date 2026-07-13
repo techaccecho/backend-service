@@ -3,6 +3,7 @@ import {
   blogsRoutes,
   commentsRoutes,
   repliesRoutes,
+  rulesOfEngagementRoutes,
 } from '../modules/index.js';
 
 export const routesPlugin = fp(async (fastify) => {
@@ -10,4 +11,5 @@ export const routesPlugin = fp(async (fastify) => {
   await fastify.register(blogsRoutes, { prefix });
   await fastify.register(commentsRoutes, { prefix });
   await fastify.register(repliesRoutes, { prefix });
+  await fastify.register(rulesOfEngagementRoutes, { prefix });
 });

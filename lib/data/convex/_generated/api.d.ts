@@ -10,6 +10,7 @@
 
 import type * as apis from "../apis.js";
 import type * as blogs from "../blogs.js";
+import type * as faqs from "../faqs.js";
 import type * as users from "../users.js";
 
 import type {
@@ -21,6 +22,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   apis: typeof apis;
   blogs: typeof blogs;
+  faqs: typeof faqs;
   users: typeof users;
 }>;
 
