@@ -53,7 +53,7 @@ export const findByAlias = query({
     return await ctx.db
       .query('users')
       .withIndex('by_alias', (q) => q.eq('alias', args.alias))
-      .unique();
+      .first();
   },
 });
 

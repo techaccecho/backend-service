@@ -1,5 +1,5 @@
 import { api } from '@lib/data';
-import { NotFoundError, Tokens, toData } from '@lib/util';
+import { NotFoundError, Tokens, toData, ValidationError } from '@lib/util';
 import type { ConvexHttpClient } from 'convex/browser';
 import type { FastifyBaseLogger } from 'fastify';
 import { type RequestHandler, requestHandler } from 'mediatr-ts';
@@ -22,7 +22,37 @@ export class UpdateUserHandler
     const { params } = request;
     const { userId } = params;
 
-    this.logger.info({ userId }, `Updating user: ${userId}`);
+    const { update, existing } = request;
+    this.logger.info({ userId }, `Updating user profile: ${userId}`);
+    const alias = update.alias;
+    if (alias != null && alias !== existing.alias) {
+      const aliasRegex = /^[a-zA-Z0-9_-]{3,30}$/;
+      if (!aliasRegex.test(alias)) {
+        throw new ValidationError({
+          details: [
+            {
+              path: '/alias',
+              message:
+                'Alias must be between 3 and 30 characters and can only contain letters, numbers, underscores, and hyphens.',
+            },
+          ],
+        });
+      }
+
+      const userWithAlias = await this.convex.query(api.users.findByAlias, {
+        alias,
+      });
+      if (userWithAlias != null) {
+        throw new ValidationError({
+          details: [
+            {
+              path: '/alias',
+              message: `Alias '${alias}' already exists`,
+            },
+          ],
+        });
+      }
+    }
 
     const updated = await this.convex.mutation(
       api.users.update,
