@@ -58,7 +58,6 @@ export const UpdateUserSchema = Type.Partial(
     ),
     role: Type.Optional(
       Type.Union([Type.Literal('user'), Type.Literal('admin')], {
-        default: 'user',
         description: 'The role of the user',
       }),
     ),
