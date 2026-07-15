@@ -93,6 +93,31 @@ export const bootstrap = async (config: BootstrapConfig) => {
   await app.register(authPlugin);
   await app.register(errorHandlerPlugin);
 
+  // Direct access prevention in production
+  app.addHook('onRequest', async (request, reply) => {
+    if (app.config.NODE_ENV === 'prod') {
+      const proxySecret = app.config.VERCEL_PROXY_SECRET;
+      if (proxySecret) {
+        // Bypass for API documentation and schema endpoints
+        if (
+          request.url.startsWith(`${routePrefix}/docs`) ||
+          request.url.startsWith(`${routePrefix}/json`)
+        ) {
+          return;
+        }
+
+        if (request.headers['x-vercel-proxy-secret'] !== proxySecret) {
+          reply.code(403).send({
+            statusCode: 403,
+            error: 'Forbidden',
+            message: 'Direct API requests are not allowed.',
+          });
+          return reply;
+        }
+      }
+    }
+  });
+
   // Swagger
   await app.register(swagger, {
     openapi: {
@@ -126,7 +151,7 @@ export const bootstrap = async (config: BootstrapConfig) => {
 
   // Cors
   await app.register(cors, {
-    origin: '*',
+    origin: app.config.NODE_ENV === 'dev' ? 'https://blognet.blog' : '*',
     methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   });
 
