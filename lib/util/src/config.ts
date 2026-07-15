@@ -23,6 +23,7 @@ export const ConfigSchema = Type.Object({
   AUTH_DOMAIN: Type.String(),
   AUTH_CLIENT_ID: Type.String(),
   AUTH_CLIENT_SECRET: Type.String(),
+  VERCEL_PROXY_SECRET: Type.Optional(Type.String()),
 });
 
 export type Config = Static<typeof ConfigSchema>;
