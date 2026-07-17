@@ -28,6 +28,7 @@ export class GetBlogsByTypeHandler
       paginationOpts: toQuery(request.query),
       ...(request.query.sort ? { sort: request.query.sort } : {}),
       ...(request.query.search ? { search: request.query.search } : {}),
+      ...(request.query.authorId ? { authorId: request.query.authorId } : {}),
       ...(request.user != null
         ? { userId: request.user.id, role: request.user.role }
         : {}),
