@@ -81,6 +81,12 @@ export const listByType = query({
           q.search('searchableText', search).eq('type', args.type),
         );
 
+      if (args.authorId !== undefined) {
+        searchQuery = searchQuery.filter((q) =>
+          q.eq(q.field('author.id'), args.authorId),
+        );
+      }
+
       if (args.role !== 'admin') {
         searchQuery = searchQuery.filter((q) =>
           q.or(
@@ -113,6 +119,12 @@ export const listByType = query({
       .query('blogs')
       .withIndex('by_type_last_activity', (q) => q.eq('type', args.type))
       .order(args.sort ?? 'desc');
+
+    if (args.authorId !== undefined) {
+      postQuery = postQuery.filter((q) =>
+        q.eq(q.field('author.id'), args.authorId),
+      );
+    }
 
     if (args.role !== 'admin') {
       postQuery = postQuery.filter((q) =>

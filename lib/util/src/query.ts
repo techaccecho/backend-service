@@ -26,6 +26,11 @@ export const QuerySchema = Type.Object({
       description: 'Search term for matching posts/threads',
     }),
   ),
+  authorId: Type.Optional(
+    Type.String({
+      description: 'Filter posts/threads by author ID',
+    }),
+  ),
 });
 
 export type Query = Static<typeof QuerySchema>;

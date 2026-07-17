@@ -340,6 +340,7 @@ export const BlogTypeSchema = v.object({
   userId: v.optional(v.string()),
   role: v.optional(v.union(v.literal('user'), v.literal('admin'))),
   search: v.optional(v.string()),
+  authorId: v.optional(v.string()),
 });
 
 export type BlogTypeArgs = Infer<typeof BlogTypeSchema>;
