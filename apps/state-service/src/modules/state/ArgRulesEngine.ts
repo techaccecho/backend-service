@@ -44,6 +44,7 @@ export interface ArgPlayerState {
   completedStepIds: string[];
   stepStates: Record<string, StepProgress>;
   inventory: string[];
+  customData?: Record<string, unknown>;
   metadata: Record<string, unknown>;
   lastUpdated: string;
 }
