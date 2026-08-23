@@ -213,6 +213,76 @@ export const FaqEntitySchema = v.object({
 
 export type FaqEntity = Infer<typeof FaqEntitySchema>;
 
+export const WordSearchCellSchema = v.object({
+  x: v.number(),
+  y: v.number(),
+});
+
+export const FoundWordSchema = v.object({
+  word: v.string(),
+  cells: v.array(WordSearchCellSchema),
+});
+
+export const ClueEntitySchema = v.object({
+  word: v.string(),
+  question: v.string(),
+});
+
+export const PuzzleEntitySchema = v.object({
+  id: v.string(),
+  userId: v.string(),
+  words: v.array(v.string()),
+  clues: v.array(ClueEntitySchema),
+  grid: v.array(v.array(v.string())),
+  size: v.number(),
+  foundWords: v.array(FoundWordSchema),
+  completed: v.boolean(),
+  shortUrl: v.optional(v.string()),
+  createdAt: v.optional(v.number()),
+  updatedAt: v.optional(v.nullable(v.number())),
+});
+
+export type PuzzleEntity = Infer<typeof PuzzleEntitySchema>;
+
+export const ShortUrlEntitySchema = v.object({
+  shortCode: v.string(),
+  redirectUrl: v.string(),
+  userId: v.string(),
+  createdAt: v.optional(v.number()),
+  expiresAt: v.optional(v.number()),
+});
+
+export type ShortUrlEntity = Infer<typeof ShortUrlEntitySchema>;
+
+export const DictionaryEntitySchema = v.object({
+  id: v.string(),
+  word: v.string(),
+  question: v.string(),
+  createdAt: v.optional(v.number()),
+  updatedAt: v.optional(v.nullable(v.number())),
+});
+
+export type DictionaryEntity = Infer<typeof DictionaryEntitySchema>;
+
+export const RedirectUrlEntitySchema = v.object({
+  type: v.string(),
+  redirectUrl: v.string(),
+  serviceName: v.optional(v.nullable(v.string())),
+  createdAt: v.optional(v.number()),
+  updatedAt: v.optional(v.nullable(v.number())),
+});
+
+export type RedirectUrlEntity = Infer<typeof RedirectUrlEntitySchema>;
+
+export const ServiceMappingEntitySchema = v.object({
+  serviceName: v.string(),
+  redirectUrlType: v.string(),
+  createdAt: v.optional(v.number()),
+  updatedAt: v.optional(v.nullable(v.number())),
+});
+
+export type ServiceMappingEntity = Infer<typeof ServiceMappingEntitySchema>;
+
 export default defineSchema({
   users: defineTable(UserEntitySchema)
     .index('by_public_id', ['id'])
@@ -238,6 +308,20 @@ export default defineSchema({
   faqs: defineTable(FaqEntitySchema)
     .index('by_public_id', ['id'])
     .index('by_type_active', ['type', 'isActive']),
+  puzzles: defineTable(PuzzleEntitySchema)
+    .index('by_public_id', ['id'])
+    .index('by_user_id', ['userId']),
+  shortUrls: defineTable(ShortUrlEntitySchema)
+    .index('by_short_code', ['shortCode'])
+    .index('by_user_id', ['userId']),
+  dictionary: defineTable(DictionaryEntitySchema)
+    .index('by_public_id', ['id'])
+    .index('by_word', ['word']),
+  redirectUrls: defineTable(RedirectUrlEntitySchema).index('by_type', ['type']),
+  serviceMappings: defineTable(ServiceMappingEntitySchema).index(
+    'by_service_name',
+    ['serviceName'],
+  ),
 });
 
 export const IdSchema = v.object({
