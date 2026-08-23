@@ -48,7 +48,10 @@ export const bootstrap = async (config: BootstrapConfig) => {
       level: process.env.LOG_LEVEL ?? 'info',
 
       transport:
-        process.env.NODE_ENV !== 'prod'
+        process.env.NODE_ENV !== 'prod' &&
+        process.env.NODE_ENV !== 'production' &&
+        !process.env.VERCEL &&
+        !process.env.AWS_LAMBDA_FUNCTION_NAME
           ? {
               target: 'pino-pretty',
               options: {
