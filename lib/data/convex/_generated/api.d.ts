@@ -15,6 +15,7 @@ import type * as dictionary from "../dictionary.js";
 import type * as faqs from "../faqs.js";
 import type * as puzzles from "../puzzles.js";
 import type * as redirectUrls from "../redirectUrls.js";
+import type * as seed from "../seed.js";
 import type * as serviceMappings from "../serviceMappings.js";
 import type * as stepDefinitions from "../stepDefinitions.js";
 import type * as urlShortener from "../urlShortener.js";
@@ -34,6 +35,7 @@ declare const fullApi: ApiFromModules<{
   faqs: typeof faqs;
   puzzles: typeof puzzles;
   redirectUrls: typeof redirectUrls;
+  seed: typeof seed;
   serviceMappings: typeof serviceMappings;
   stepDefinitions: typeof stepDefinitions;
   urlShortener: typeof urlShortener;
