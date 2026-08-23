@@ -3,10 +3,10 @@ import { routesPlugin } from '../plugins/index.js';
 
 export async function buildApp() {
   const app = await bootstrap({
-    routePrefix: '/blog-api',
+    routePrefix: '/admin-api',
     docs: {
-      title: 'Blog Service',
-      description: 'Documentation of the Blog Service',
+      title: 'Admin Service',
+      description: 'Documentation of the Admin Service & ARG Step Management',
       version: '1.0.0',
     },
   });

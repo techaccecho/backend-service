@@ -37,10 +37,11 @@ export type BootstrapConfig = {
     description: string;
     version: string;
   };
+  includeDefaultRoutes?: boolean;
 };
 
 export const bootstrap = async (config: BootstrapConfig) => {
-  const { routePrefix, docs } = config;
+  const { routePrefix, docs, includeDefaultRoutes = false } = config;
 
   const app = Fastify({
     logger: {
@@ -155,8 +156,10 @@ export const bootstrap = async (config: BootstrapConfig) => {
     methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   });
 
-  // Routes
-  await app.register(routesPlugin, { routePrefix });
+  // Routes (only if default routes enabled)
+  if (includeDefaultRoutes) {
+    await app.register(routesPlugin, { routePrefix });
+  }
 
   return app;
 };
