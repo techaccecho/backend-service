@@ -42,7 +42,18 @@ function getOrCreateState(userId: string, username?: string): ArgPlayerState {
 }
 
 export const stateRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
-  const { authenticate, convex } = fastify;
+  const { convex } = fastify;
+
+  const optionalAuthenticate = async (request: any) => {
+    const authHeader = request.headers?.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      try {
+        await request.jwtVerify();
+      } catch {
+        // Fallback to guest mode
+      }
+    }
+  };
 
   fastify.get(
     '/player/state',
@@ -50,6 +61,9 @@ export const stateRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
       schema: {
         description: 'Get active player ARG progress projection payload',
         tags: ['ARG Player State'],
+        querystring: Type.Object({
+          userId: Type.Optional(Type.String()),
+        }),
         response: {
           200: Type.Object({
             userId: Type.String(),
@@ -62,7 +76,7 @@ export const stateRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
           500: AppErrorSchema,
         },
       },
-      preHandler: [authenticate],
+      preHandler: [optionalAuthenticate],
     },
     async (request, reply) => {
       const reqAny = request as any;
@@ -76,7 +90,11 @@ export const stateRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
               userId,
             },
           );
-        } catch {
+        } catch (convexErr) {
+          console.error(
+            '[state-service] Convex query error in getProjectionPayload:',
+            convexErr,
+          );
           const state = getOrCreateState(userId);
           payload = ArgRulesEngine.computeProjectionPayload(
             state,
@@ -99,6 +117,7 @@ export const stateRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
         tags: ['ARG Player State'],
         body: Type.Object({
           stepId: Type.String(),
+          userId: Type.Optional(Type.String()),
           customData: Type.Optional(Type.Any()),
         }),
         response: {
@@ -113,7 +132,7 @@ export const stateRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
           500: AppErrorSchema,
         },
       },
-      preHandler: [authenticate],
+      preHandler: [optionalAuthenticate],
     },
     async (request, reply) => {
       const reqAny = request as any;
@@ -127,7 +146,11 @@ export const stateRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
             'argPlayerStates:completeStep',
             { userId, stepId, customData },
           );
-        } catch {
+        } catch (convexErr) {
+          console.error(
+            '[state-service] Convex mutation error in completeStep:',
+            convexErr,
+          );
           const state = getOrCreateState(userId);
           const res = ArgRulesEngine.completeStep(
             state,
@@ -162,6 +185,7 @@ export const stateRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
         tags: ['ARG Player State'],
         body: Type.Object({
           stepId: Type.String(),
+          userId: Type.Optional(Type.String()),
         }),
         response: {
           200: Type.Object({
@@ -175,7 +199,7 @@ export const stateRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
           500: AppErrorSchema,
         },
       },
-      preHandler: [authenticate],
+      preHandler: [optionalAuthenticate],
     },
     async (request, reply) => {
       const reqAny = request as any;
@@ -188,7 +212,11 @@ export const stateRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
             'argPlayerStates:recordFailure',
             { userId, stepId },
           );
-        } catch {
+        } catch (convexErr) {
+          console.error(
+            '[state-service] Convex mutation error in recordFailure:',
+            convexErr,
+          );
           const state = getOrCreateState(userId);
           const res = ArgRulesEngine.recordFailure(state, stepId, stepManifest);
           inMemoryPlayerStates.set(userId, res.updatedState);
@@ -227,36 +255,74 @@ export const stateRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
           500: AppErrorSchema,
         },
       },
-      preHandler: [authenticate],
+      preHandler: [optionalAuthenticate],
     },
     async (request, reply) => {
       const reqAny = request as any;
       const userId = reqAny.user?.sub || reqAny.body?.userId || 'user-default';
       const { guestUserId } = request.body;
+      let updatedPayload: any;
 
-      const guestState = inMemoryPlayerStates.get(guestUserId);
-      let userState = getOrCreateState(userId);
+      if (convex && (convex as any).mutation) {
+        try {
+          updatedPayload = await (convex as any).mutation(
+            'argPlayerStates:claimGuest',
+            { userId, guestUserId },
+          );
+        } catch (convexErr) {
+          console.error(
+            '[state-service] Convex mutation error in claimGuest:',
+            convexErr,
+          );
+          const guestState = inMemoryPlayerStates.get(guestUserId);
+          let userState = getOrCreateState(userId);
 
-      if (guestState && guestState.completedStepIds.length > 0) {
-        for (const stepId of guestState.completedStepIds) {
-          if (!userState.completedStepIds.includes(stepId)) {
-            const res = ArgRulesEngine.completeStep(
-              userState,
-              stepId,
-              stepManifest,
-              guestState.customData?.[stepId],
-            );
-            userState = res.updatedState;
+          if (guestState && guestState.completedStepIds.length > 0) {
+            for (const stepId of guestState.completedStepIds) {
+              if (!userState.completedStepIds.includes(stepId)) {
+                const res = ArgRulesEngine.completeStep(
+                  userState,
+                  stepId,
+                  stepManifest,
+                  guestState.customData?.[stepId],
+                );
+                userState = res.updatedState;
+              }
+            }
+            inMemoryPlayerStates.set(userId, userState);
           }
+
+          updatedPayload = ArgRulesEngine.computeProjectionPayload(
+            userState,
+            stepManifest,
+          );
         }
-        inMemoryPlayerStates.set(userId, userState);
+      } else {
+        const guestState = inMemoryPlayerStates.get(guestUserId);
+        let userState = getOrCreateState(userId);
+
+        if (guestState && guestState.completedStepIds.length > 0) {
+          for (const stepId of guestState.completedStepIds) {
+            if (!userState.completedStepIds.includes(stepId)) {
+              const res = ArgRulesEngine.completeStep(
+                userState,
+                stepId,
+                stepManifest,
+                guestState.customData?.[stepId],
+              );
+              userState = res.updatedState;
+            }
+          }
+          inMemoryPlayerStates.set(userId, userState);
+        }
+
+        updatedPayload = ArgRulesEngine.computeProjectionPayload(
+          userState,
+          stepManifest,
+        );
       }
 
-      const payload = ArgRulesEngine.computeProjectionPayload(
-        userState,
-        stepManifest,
-      );
-      return reply.status(200).send(payload);
+      return reply.status(200).send(updatedPayload);
     },
   );
 };
