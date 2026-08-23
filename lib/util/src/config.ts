@@ -2,7 +2,14 @@ import { type Static, Type } from '@sinclair/typebox';
 
 export const ConfigSchema = Type.Object({
   NODE_ENV: Type.Union(
-    [Type.Literal('dev'), Type.Literal('prod'), Type.Literal('test')],
+    [
+      Type.Literal('dev'),
+      Type.Literal('development'),
+      Type.Literal('prod'),
+      Type.Literal('production'),
+      Type.Literal('test'),
+      Type.Literal('preview'),
+    ],
     {
       default: 'dev',
     },
@@ -16,6 +23,9 @@ export const ConfigSchema = Type.Object({
       Type.Literal('debug'),
       Type.Literal('warn'),
       Type.Literal('error'),
+      Type.Literal('fatal'),
+      Type.Literal('trace'),
+      Type.Literal('silent'),
     ],
     { default: 'error' },
   ),
