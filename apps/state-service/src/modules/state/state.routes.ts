@@ -203,4 +203,60 @@ export const stateRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
       return reply.status(200).send(updatedPayload);
     },
   );
+
+  fastify.post(
+    '/player/claim-guest',
+    {
+      schema: {
+        description:
+          'Claim and merge guest player progress into authenticated user profile',
+        tags: ['ARG Player State'],
+        body: Type.Object({
+          guestUserId: Type.String(),
+          userId: Type.Optional(Type.String()),
+        }),
+        response: {
+          200: Type.Object({
+            userId: Type.String(),
+            activeStep: Type.Optional(Type.Any()),
+            completedStepIds: Type.Array(Type.String()),
+            nextAvailableSteps: Type.Array(Type.Any()),
+            unlockedPayloads: Type.Record(Type.String(), Type.Any()),
+          }),
+          400: AppErrorSchema,
+          500: AppErrorSchema,
+        },
+      },
+      preHandler: [authenticate],
+    },
+    async (request, reply) => {
+      const reqAny = request as any;
+      const userId = reqAny.user?.sub || reqAny.body?.userId || 'user-default';
+      const { guestUserId } = request.body;
+
+      const guestState = inMemoryPlayerStates.get(guestUserId);
+      let userState = getOrCreateState(userId);
+
+      if (guestState && guestState.completedStepIds.length > 0) {
+        for (const stepId of guestState.completedStepIds) {
+          if (!userState.completedStepIds.includes(stepId)) {
+            const res = ArgRulesEngine.completeStep(
+              userState,
+              stepId,
+              stepManifest,
+              guestState.customData?.[stepId],
+            );
+            userState = res.updatedState;
+          }
+        }
+        inMemoryPlayerStates.set(userId, userState);
+      }
+
+      const payload = ArgRulesEngine.computeProjectionPayload(
+        userState,
+        stepManifest,
+      );
+      return reply.status(200).send(payload);
+    },
+  );
 };

@@ -116,4 +116,42 @@ describe('ArgRulesEngine (state-service)', () => {
       0,
     );
   });
+
+  test('merging guest state imports completed step_02_wordsearch into new user profile', () => {
+    let guestState = ArgRulesEngine.createInitialPlayerState('guest_8b2deacb');
+    guestState = ArgRulesEngine.completeStep(
+      guestState,
+      'step_01_blog',
+      mockManifest,
+    ).updatedState;
+    guestState = ArgRulesEngine.completeStep(
+      guestState,
+      'step_02_wordsearch',
+      mockManifest,
+      { shortUrl: 'aB3dE9x' },
+    ).updatedState;
+
+    let userState = ArgRulesEngine.createInitialPlayerState('auth0|player_123');
+    let projection:
+      | ReturnType<typeof ArgRulesEngine.computeProjectionPayload>
+      | undefined;
+    for (const stepId of guestState.completedStepIds) {
+      if (!userState.completedStepIds.includes(stepId)) {
+        const res = ArgRulesEngine.completeStep(
+          userState,
+          stepId,
+          mockManifest,
+          guestState.customData?.[stepId],
+        );
+        userState = res.updatedState;
+        projection = res.projectionPayload;
+      }
+    }
+
+    expect(userState.completedStepIds).toContain('step_01_blog');
+    expect(userState.completedStepIds).toContain('step_02_wordsearch');
+    expect(userState.stepStates.step_02_wordsearch.status).toBe('COMPLETED');
+    expect(projection?.activeStep?.id).toBe('step_07_passcode');
+    expect(projection?.activeStep?.status).toBe('UNLOCKED');
+  });
 });
