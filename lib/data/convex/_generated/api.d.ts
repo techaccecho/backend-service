@@ -9,12 +9,14 @@
  */
 
 import type * as apis from "../apis.js";
+import type * as argPlayerStates from "../argPlayerStates.js";
 import type * as blogs from "../blogs.js";
 import type * as dictionary from "../dictionary.js";
 import type * as faqs from "../faqs.js";
 import type * as puzzles from "../puzzles.js";
 import type * as redirectUrls from "../redirectUrls.js";
 import type * as serviceMappings from "../serviceMappings.js";
+import type * as stepDefinitions from "../stepDefinitions.js";
 import type * as urlShortener from "../urlShortener.js";
 import type * as users from "../users.js";
 
@@ -26,12 +28,14 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   apis: typeof apis;
+  argPlayerStates: typeof argPlayerStates;
   blogs: typeof blogs;
   dictionary: typeof dictionary;
   faqs: typeof faqs;
   puzzles: typeof puzzles;
   redirectUrls: typeof redirectUrls;
   serviceMappings: typeof serviceMappings;
+  stepDefinitions: typeof stepDefinitions;
   urlShortener: typeof urlShortener;
   users: typeof users;
 }>;

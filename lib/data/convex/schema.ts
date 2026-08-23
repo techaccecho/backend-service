@@ -283,6 +283,41 @@ export const ServiceMappingEntitySchema = v.object({
 
 export type ServiceMappingEntity = Infer<typeof ServiceMappingEntitySchema>;
 
+export const StepLockoutPolicySchema = v.object({
+  maxAttempts: v.number(),
+  resetPrerequisiteStepId: v.string(),
+});
+
+export const StepDefinitionEntitySchema = v.object({
+  id: v.string(),
+  order: v.number(),
+  type: v.string(),
+  title: v.string(),
+  isUnordered: v.boolean(),
+  prerequisites: v.array(v.string()),
+  prerequisiteMode: v.string(),
+  lockoutPolicy: v.optional(StepLockoutPolicySchema),
+  unlockPayload: v.optional(v.any()),
+  isDeleted: v.optional(v.boolean()),
+  createdAt: v.optional(v.number()),
+  updatedAt: v.optional(v.nullable(v.number())),
+});
+
+export type StepDefinitionEntity = Infer<typeof StepDefinitionEntitySchema>;
+
+export const ArgPlayerStateEntitySchema = v.object({
+  userId: v.string(),
+  username: v.optional(v.nullable(v.string())),
+  completedStepIds: v.array(v.string()),
+  stepStates: v.any(),
+  inventory: v.array(v.string()),
+  customData: v.optional(v.any()),
+  metadata: v.optional(v.any()),
+  lastUpdated: v.string(),
+});
+
+export type ArgPlayerStateEntity = Infer<typeof ArgPlayerStateEntitySchema>;
+
 export default defineSchema({
   users: defineTable(UserEntitySchema)
     .index('by_public_id', ['id'])
@@ -322,6 +357,12 @@ export default defineSchema({
     'by_service_name',
     ['serviceName'],
   ),
+  stepDefinitions: defineTable(StepDefinitionEntitySchema)
+    .index('by_public_id', ['id'])
+    .index('by_order', ['order'])
+    .index('by_is_deleted', ['isDeleted']),
+  argPlayerStates: defineTable(ArgPlayerStateEntitySchema)
+    .index('by_user_id', ['userId']),
 });
 
 export const IdSchema = v.object({
