@@ -8,6 +8,7 @@ export async function buildApp() {
       description: 'Documentation of the Auth Service',
       version: '1.0.0',
     },
+    includeDefaultRoutes: true,
   });
 
   return app;

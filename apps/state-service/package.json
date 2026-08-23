@@ -1,0 +1,43 @@
+{
+  "name": "state-service",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.33.2",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "predev": "tsc -b",
+    "dev": "tsx watch --env-file=.env src/index.ts",
+    "prebuild": "pnpm --filter=@lib/* build",
+    "build": "tsup",
+    "clean": "rimraf dist api",
+    "clean:build": "rimraf dist api && tsc -b && tsup",
+    "start": "node --env-file=.env dist/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@lib/data": "workspace:*",
+    "@lib/util": "workspace:*",
+    "@lib/domain": "workspace:*",
+    "@lib/starter": "workspace:*",
+    "@fastify/auth": "^5.0.4",
+    "@fastify/cors": "^11.2.0",
+    "@fastify/env": "^6.0.0",
+    "@fastify/jwt": "^10.0.0",
+    "@fastify/swagger": "^9.7.0",
+    "@fastify/swagger-ui": "^5.2.6",
+    "@fastify/type-provider-typebox": "^6.1.0",
+    "@sinclair/typebox": "^0.34.49",
+    "ajv-formats": "^3.0.1",
+    "convex": "^1.36.1",
+    "dotenv": "^17.4.2",
+    "fastify": "^5.8.5",
+    "fastify-plugin": "^5.1.0",
+    "jwks-rsa": "^3.2.2",
+    "mediatr-ts": "^2.2.0",
+    "reflect-metadata": "^0.2.2",
+    "tsyringe": "^4.10.0"
+  }
+}

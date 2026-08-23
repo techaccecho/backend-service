@@ -12,10 +12,12 @@
     "dev:auth": "pnpm --filter auth-service... --parallel run dev",
     "dev:blog": "pnpm --filter blog-service... --parallel run dev",
     "dev:game": "pnpm --filter game-service... --parallel run dev",
+    "dev:state": "pnpm --filter state-service... --parallel run dev",
     "start:admin": "pnpm --filter admin-service run start",
     "start:auth": "pnpm --filter auth-service run start",
     "start:blog": "pnpm --filter blog-service run start",
     "start:game": "pnpm --filter game-service run start",
+    "start:state": "pnpm --filter state-service run start",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "format": "biome format --write ."

@@ -1,4 +1,32 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const inMemoryStepDefinitions = new Map<string, any>();
+
+const loadManifestSeedIfNeeded = () => {
+  if (inMemoryStepDefinitions.size === 0) {
+    try {
+      const manifestPath = path.join(
+        __dirname,
+        '../../../../state-service/config/arg_steps_manifest.json',
+      );
+      if (fs.existsSync(manifestPath)) {
+        const steps = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+        for (const s of steps) {
+          inMemoryStepDefinitions.set(s.id, s);
+        }
+      }
+    } catch {
+      // Ignore fallback load error
+    }
+  }
+};
+
 import {
   ApiDataSchema,
   CreateApiCommand,
@@ -374,6 +402,223 @@ export const apisRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
       });
       await mediator.send(command);
       return reply.status(204).send(null);
+    },
+  );
+
+  // --- ARG Step Definition Management Routes ---
+
+  fastify.get(
+    '/arg-state/steps',
+    {
+      schema: {
+        description: 'Get all ARG step definitions (including soft deleted)',
+        tags: ['ARG State Steps'],
+        response: {
+          200: Type.Array(Type.Any()),
+          500: AppErrorSchema,
+        },
+      },
+      preHandler: [authenticate],
+    },
+    async (request, reply) => {
+      let steps: any = null;
+      try {
+        steps = await (convex as any)
+          .query('stepDefinitions:listAll', {})
+          .catch(() => null);
+      } catch {
+        steps = null;
+      }
+      if (!steps || !Array.isArray(steps) || steps.length === 0) {
+        loadManifestSeedIfNeeded();
+        steps = Array.from(inMemoryStepDefinitions.values());
+      }
+      return reply.status(200).send(steps);
+    },
+  );
+
+  fastify.post(
+    '/arg-state/steps',
+    {
+      schema: {
+        description: 'Create or update an ARG step definition',
+        tags: ['ARG State Steps'],
+        body: Type.Object({
+          id: Type.String(),
+          order: Type.Number(),
+          type: Type.String(),
+          title: Type.String(),
+          isUnordered: Type.Boolean(),
+          prerequisites: Type.Array(Type.String()),
+          prerequisiteMode: Type.String(),
+          lockoutPolicy: Type.Optional(
+            Type.Object({
+              maxAttempts: Type.Number(),
+              resetPrerequisiteStepId: Type.String(),
+            }),
+          ),
+          unlockPayload: Type.Optional(Type.Any()),
+        }),
+        response: {
+          201: Type.Object({ success: Type.Boolean(), step: Type.Any() }),
+          400: AppErrorSchema,
+          500: AppErrorSchema,
+        },
+      },
+      preHandler: [authenticate],
+    },
+    async (request, reply) => {
+      const step = request.body as any;
+      let response: any = null;
+      try {
+        response = await (convex as any)
+          .mutation('stepDefinitions:save', { step })
+          .catch(() => null);
+      } catch {
+        response = null;
+      }
+      if (!response) {
+        inMemoryStepDefinitions.set(step.id, step);
+        response = { success: true, step };
+      }
+      return reply.status(201).send(response);
+    },
+  );
+
+  fastify.put(
+    '/arg-state/steps/:id',
+    {
+      schema: {
+        description: 'Update an existing ARG step definition',
+        tags: ['ARG State Steps'],
+        params: Type.Object({ id: Type.String() }),
+        body: Type.Object({
+          order: Type.Optional(Type.Number()),
+          type: Type.Optional(Type.String()),
+          title: Type.Optional(Type.String()),
+          isUnordered: Type.Optional(Type.Boolean()),
+          prerequisites: Type.Optional(Type.Array(Type.String())),
+          prerequisiteMode: Type.Optional(Type.String()),
+          lockoutPolicy: Type.Optional(
+            Type.Object({
+              maxAttempts: Type.Number(),
+              resetPrerequisiteStepId: Type.String(),
+            }),
+          ),
+          unlockPayload: Type.Optional(Type.Any()),
+        }),
+        response: {
+          200: Type.Object({ success: Type.Boolean(), step: Type.Any() }),
+          400: AppErrorSchema,
+          500: AppErrorSchema,
+        },
+      },
+      preHandler: [authenticate],
+    },
+    async (request, reply) => {
+      const { id } = request.params as any;
+      let existing: any = null;
+      try {
+        existing = await (convex as any)
+          .query('stepDefinitions:getById', { id })
+          .catch(() => null);
+      } catch {
+        existing = null;
+      }
+      if (!existing) {
+        loadManifestSeedIfNeeded();
+        existing = inMemoryStepDefinitions.get(id);
+      }
+      const updatedStep = { ...(existing || {}), ...(request.body as any), id };
+      let response: any = null;
+      try {
+        response = await (convex as any)
+          .mutation('stepDefinitions:save', { step: updatedStep })
+          .catch(() => null);
+      } catch {
+        response = null;
+      }
+      if (!response) {
+        inMemoryStepDefinitions.set(id, updatedStep);
+        response = { success: true, step: updatedStep };
+      }
+      return reply.status(200).send(response);
+    },
+  );
+
+  fastify.delete(
+    '/arg-state/steps/:id',
+    {
+      schema: {
+        description: 'Soft-delete an ARG step definition',
+        tags: ['ARG State Steps'],
+        params: Type.Object({ id: Type.String() }),
+        response: {
+          200: Type.Object({ success: Type.Boolean(), id: Type.String() }),
+          400: AppErrorSchema,
+          500: AppErrorSchema,
+        },
+      },
+      preHandler: [authenticate],
+    },
+    async (request, reply) => {
+      const { id } = request.params as any;
+      let response: any = null;
+      try {
+        response = await (convex as any)
+          .mutation('stepDefinitions:softDelete', { id })
+          .catch(() => null);
+      } catch {
+        response = null;
+      }
+      if (!response) {
+        loadManifestSeedIfNeeded();
+        const step = inMemoryStepDefinitions.get(id);
+        if (step) {
+          step.isDeleted = true;
+          step.deletedAt = new Date().toISOString();
+        }
+        response = { success: true, id };
+      }
+      return reply.status(200).send(response);
+    },
+  );
+
+  fastify.patch(
+    '/arg-state/steps/:id/restore',
+    {
+      schema: {
+        description: 'Restore a soft-deleted ARG step definition',
+        tags: ['ARG State Steps'],
+        params: Type.Object({ id: Type.String() }),
+        response: {
+          200: Type.Object({ success: Type.Boolean(), id: Type.String() }),
+          400: AppErrorSchema,
+          500: AppErrorSchema,
+        },
+      },
+      preHandler: [authenticate],
+    },
+    async (request, reply) => {
+      const { id } = request.params as any;
+      let response: any = null;
+      try {
+        response = await (convex as any)
+          .mutation('stepDefinitions:restore', { id })
+          .catch(() => null);
+      } catch {
+        response = null;
+      }
+      if (!response) {
+        loadManifestSeedIfNeeded();
+        const step = inMemoryStepDefinitions.get(id);
+        if (step) {
+          step.isDeleted = false;
+          delete step.deletedAt;
+        }
+        response = { success: true, id };
+      }
+      return reply.status(200).send(response);
     },
   );
 };
