@@ -82,7 +82,7 @@
     "prerequisites": ["step_06_ascii_post"],
     "prerequisiteMode": "ALL",
     "lockoutPolicy": {
-      "maxAttempts": 6,
+      "maxAttempts": 4,
       "resetPrerequisiteStepId": "step_02_wordsearch"
     },
     "unlockPayload": {

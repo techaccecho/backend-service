@@ -361,8 +361,9 @@ export default defineSchema({
     .index('by_public_id', ['id'])
     .index('by_order', ['order'])
     .index('by_is_deleted', ['isDeleted']),
-  argPlayerStates: defineTable(ArgPlayerStateEntitySchema)
-    .index('by_user_id', ['userId']),
+  argPlayerStates: defineTable(ArgPlayerStateEntitySchema).index('by_user_id', [
+    'userId',
+  ]),
 });
 
 export const IdSchema = v.object({

@@ -44,11 +44,7 @@ function computeProjection(playerState: any, stepManifest: any[]) {
 
   for (const step of activeSteps) {
     const isCompleted = completedSet.has(step.id);
-    const isPrereqsMet = evaluatePrerequisites(
-      step,
-      completedSet,
-      manifestMap,
-    );
+    const isPrereqsMet = evaluatePrerequisites(step, completedSet, manifestMap);
 
     if (isCompleted) {
       if (step.unlockPayload) {
@@ -276,7 +272,21 @@ export const recordFailure = mutation({
         lastAttemptAt: now,
       };
 
+      let completedStepIds = playerState.completedStepIds || [];
+      if (isLockedOut && stepDef?.lockoutPolicy?.resetPrerequisiteStepId) {
+        const resetStepId = stepDef.lockoutPolicy.resetPrerequisiteStepId;
+        completedStepIds = completedStepIds.filter(
+          (id: string) => id !== resetStepId,
+        );
+        stepStates[resetStepId] = {
+          stepId: resetStepId,
+          status: 'UNLOCKED',
+          attempts: 0,
+        };
+      }
+
       await ctx.db.patch(playerState._id, {
+        completedStepIds,
         stepStates,
         lastUpdated: now,
       });
@@ -350,6 +360,9 @@ export const claimGuest = mutation({
       .withIndex('by_order')
       .collect();
 
-    return computeProjection(userState || { userId: args.userId, completedStepIds: [] }, allSteps);
+    return computeProjection(
+      userState || { userId: args.userId, completedStepIds: [] },
+      allSteps,
+    );
   },
 });

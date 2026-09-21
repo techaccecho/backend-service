@@ -91,3 +91,21 @@ export const list = query({
     return { items, continueCursor: null };
   },
 });
+
+export const reset = mutation({
+  args: {
+    userId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const puzzles = await ctx.db
+      .query('puzzles')
+      .withIndex('by_user_id', (q) => q.eq('userId', args.userId))
+      .collect();
+
+    for (const puzzle of puzzles) {
+      await ctx.db.delete(puzzle._id);
+    }
+
+    return { success: true };
+  },
+});
