@@ -262,7 +262,7 @@ export const ArgRulesEngine = {
     };
 
     const newAttempts = currentProgress.attempts + 1;
-    const maxAttempts = stepDef?.lockoutPolicy?.maxAttempts || 6;
+    const maxAttempts = stepDef?.lockoutPolicy?.maxAttempts || 4;
     const isLockedOut = newAttempts >= maxAttempts;
 
     playerState.stepStates[stepId] = {
@@ -270,6 +270,17 @@ export const ArgRulesEngine = {
       status: isLockedOut ? 'LOCKED_OUT' : 'IN_PROGRESS',
       attempts: newAttempts,
     };
+
+    if (isLockedOut && stepDef?.lockoutPolicy?.resetPrerequisiteStepId) {
+      const resetStepId = stepDef.lockoutPolicy.resetPrerequisiteStepId;
+      playerState.completedStepIds = playerState.completedStepIds.filter(
+        (id) => id !== resetStepId,
+      );
+      playerState.stepStates[resetStepId] = {
+        status: 'UNLOCKED',
+        attempts: 0,
+      };
+    }
 
     playerState.lastUpdated = new Date().toISOString();
     const projectionPayload = this.computeProjectionPayload(

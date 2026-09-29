@@ -264,6 +264,17 @@ export const ArgRulesEngine = {
       attempts: newAttempts,
     };
 
+    if (isLockedOut && stepDef?.lockoutPolicy?.resetPrerequisiteStepId) {
+      const resetStepId = stepDef.lockoutPolicy.resetPrerequisiteStepId;
+      playerState.completedStepIds = playerState.completedStepIds.filter(
+        (id) => id !== resetStepId,
+      );
+      playerState.stepStates[resetStepId] = {
+        status: 'UNLOCKED',
+        attempts: 0,
+      };
+    }
+
     playerState.lastUpdated = new Date().toISOString();
     const projectionPayload = this.computeProjectionPayload(
       playerState,

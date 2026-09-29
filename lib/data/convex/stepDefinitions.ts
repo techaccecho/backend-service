@@ -16,7 +16,10 @@ export const list = query({
 export const listAll = query({
   args: {},
   handler: async (ctx) => {
-    return await ctx.db.query('stepDefinitions').withIndex('by_order').collect();
+    return await ctx.db
+      .query('stepDefinitions')
+      .withIndex('by_order')
+      .collect();
   },
 });
 

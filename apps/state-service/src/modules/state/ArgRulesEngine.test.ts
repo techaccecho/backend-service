@@ -30,7 +30,7 @@ describe('ArgRulesEngine (state-service)', () => {
       prerequisites: ['step_02_wordsearch'],
       prerequisiteMode: 'ALL',
       lockoutPolicy: {
-        maxAttempts: 6,
+        maxAttempts: 4,
         resetPrerequisiteStepId: 'step_02_wordsearch',
       },
     },
@@ -73,12 +73,12 @@ describe('ArgRulesEngine (state-service)', () => {
     ).toBe(true);
   });
 
-  test('recordFailure triggers LOCKED_OUT on 6th attempt', () => {
+  test('recordFailure triggers LOCKED_OUT on 4th attempt and resets prerequisite wordsearch step', () => {
     const state = ArgRulesEngine.createInitialPlayerState('user_123');
     ArgRulesEngine.completeStep(state, 'step_01_blog', mockManifest);
     ArgRulesEngine.completeStep(state, 'step_02_wordsearch', mockManifest);
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 3; i++) {
       ArgRulesEngine.recordFailure(state, 'step_07_passcode', mockManifest);
     }
     const finalResult = ArgRulesEngine.recordFailure(
@@ -86,7 +86,22 @@ describe('ArgRulesEngine (state-service)', () => {
       'step_07_passcode',
       mockManifest,
     );
-    expect(finalResult.projectionPayload.activeStep?.status).toBe('LOCKED_OUT');
+    expect(finalResult.updatedState.stepStates.step_07_passcode.status).toBe(
+      'LOCKED_OUT',
+    );
+    expect(finalResult.updatedState.completedStepIds).not.toContain(
+      'step_02_wordsearch',
+    );
+    expect(finalResult.updatedState.stepStates.step_02_wordsearch.status).toBe(
+      'UNLOCKED',
+    );
+    expect(
+      finalResult.updatedState.stepStates.step_02_wordsearch.attempts,
+    ).toBe(0);
+    expect(finalResult.projectionPayload.activeStep?.id).toBe(
+      'step_02_wordsearch',
+    );
+    expect(finalResult.projectionPayload.activeStep?.status).toBe('UNLOCKED');
   });
 
   test('re-solving Step 2 Wordsearch clears Step 7 Passcode Lockout', () => {
@@ -94,7 +109,7 @@ describe('ArgRulesEngine (state-service)', () => {
     ArgRulesEngine.completeStep(state, 'step_01_blog', mockManifest);
     ArgRulesEngine.completeStep(state, 'step_02_wordsearch', mockManifest);
 
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 4; i++) {
       state = ArgRulesEngine.recordFailure(
         state,
         'step_07_passcode',

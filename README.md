@@ -64,7 +64,7 @@ backend-service/
 
 - **`POST /state-api/player/step/fail`**
   - **Body**: `{ "stepId": "step_07_passcode" }`
-  - **Description**: Increments failure counter for a step. Enforces lockout policy upon reaching max attempts (6th failed attempt switches status to `LOCKED_OUT`).
+  - **Description**: Increments failure counter for a step. Enforces lockout policy upon reaching max attempts (4th failed attempt switches status to `LOCKED_OUT`).
 
 ---
 
