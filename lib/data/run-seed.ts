@@ -7,9 +7,13 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-dotenv.config({ path: path.join(__dirname, '.env.local') });
+const cliUrl = process.argv[2];
+if (!cliUrl) {
+  dotenv.config({ path: path.join(__dirname, '.env.local') });
+}
 
 const convexUrl =
+  cliUrl ||
   process.env.CONVEX_URL ||
   'https://flippant-sardine-31.eu-west-1.convex.cloud';
 console.log(`Connecting to Convex: ${convexUrl}`);
